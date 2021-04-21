@@ -24,7 +24,7 @@ namespace Eruru.MVVM {
 		public MVVMBinding DataContext {
 
 			get {
-				return _DataContext == null ? (DataContext = new MVVMBindingSource ()) : _DataContext;
+				return _DataContext == null ? (DataContext = new MVVMBinding ()) : _DataContext;
 			}
 
 			set {
@@ -32,14 +32,15 @@ namespace Eruru.MVVM {
 					value.Rebinding (ParentDataContext);
 				}
 				InitializeBinding (ref _DataContext, value,
-					propertyValue => {
+					targetValue => {
 						if (OnDataContextChanged != null) {
-							OnDataContextChanged (propertyValue);
+							OnDataContextChanged (targetValue);
 						}
 						foreach (MVVMControl control in Controls) {
-							control.DataContext.Rebinding (propertyValue);
+							control.DataContext.Rebinding (targetValue);
 						}
 					}, () => DataContext.GetValue (),
+					null, null,
 					null, null,
 					true
 				);
@@ -66,6 +67,7 @@ namespace Eruru.MVVM {
 		event Action<object> OnDataContextChanged;
 		MVVMBinding _DataContext;
 		MVVMView _View;
+		bool IsChanging;
 
 		public MVVMControl Add (MVVMControl control) {
 			if (control == null) {
@@ -90,6 +92,7 @@ namespace Eruru.MVVM {
 			ref MVVMBinding binding, MVVMBinding value,
 			Action<object> setTargetValue = null, MVVMFunc<object> getTargetValue = null,
 			MVVMAction registerChanged = null, MVVMAction unregisterChanged = null,
+			MVVMAction registerLostFocus = null, MVVMAction unregisterLostFocus = null,
 			bool isDataContext = false, [CallerMemberName] string propertyName = null
 		) {
 			if (binding != null) {
@@ -99,10 +102,14 @@ namespace Eruru.MVVM {
 			if (unregisterChanged != null) {
 				unregisterChanged ();
 			}
+			if (unregisterLostFocus != null) {
+				unregisterLostFocus ();
+			}
 			binding = value;
 			if (value == null) {
 				return;
 			}
+			value.Control = this;
 			value.TargetPropertyName = propertyName == null ? MVVMApi.GetCallerMemberName () : propertyName;
 			if (setTargetValue != null) {
 				value.SetTargetValueAction = setTargetValue;
@@ -110,35 +117,62 @@ namespace Eruru.MVVM {
 			if (getTargetValue != null) {
 				value.GetTargetValueFunc = getTargetValue;
 			}
-			if (registerChanged != null) {
+			if (registerChanged == null) {
+				value.DefaultMode = MVVMBindingMode.OneWay;
+			} else {
+				value.DefaultMode = MVVMBindingMode.TwoWay;
 				registerChanged ();
 			}
-			value.DefaultMode = registerChanged == null ? MVVMBindingMode.OneWay : MVVMBindingMode.TwoWay;
+			if (registerLostFocus == null) {
+				value.DefaultUpdateSourceTrigger = MVVMBindingUpdateSourceTrigger.PropertyChanged;
+			} else {
+				value.DefaultUpdateSourceTrigger = MVVMBindingUpdateSourceTrigger.LostFocus;
+				registerLostFocus ();
+			}
 			if (isDataContext) {
 				return;
 			}
-			value.Control = this;
 			value.Rebinding (DataContext.GetValue ());
 			OnDataContextChanged += binding.Rebinding;
 		}
 
 		protected MVVMBinding GetBinding (ref MVVMBinding binding, Action<MVVMBinding> set) {
 			if (binding == null) {
-				set (new MVVMBindingValue ());
+				set (new MVVMBinding (string.Empty));
 			}
 			return binding;
 		}
 
-		protected void Changed (MVVMBinding binding, object value) {
+		internal void Changed (MVVMBinding binding, object value, MVVMBindingChangedType type = MVVMBindingChangedType.PropertyChanged) {
 			if (binding == null) {
 				return;
 			}
+			if (IsChanging) {
+				return;
+			}
+			IsChanging = true;
 			switch (binding.GetMode ()) {
 				case MVVMBindingMode.TwoWay:
 				case MVVMBindingMode.OneWayToSource:
-					binding.SetValue (value);
+					switch (binding.GetUpdateSourceTrigger ()) {
+						case MVVMBindingUpdateSourceTrigger.PropertyChanged:
+							binding.SetValue (value);
+							break;
+						case MVVMBindingUpdateSourceTrigger.LostFocus:
+							if (type == MVVMBindingChangedType.LostFocus) {
+								binding.SetValue (value);
+							}
+							break;
+						case MVVMBindingUpdateSourceTrigger.Explicit:
+							if (type == MVVMBindingChangedType.UpdateSource) {
+								binding.SetValue (value);
+							}
+							break;
+
+					}
 					break;
 			}
+			IsChanging = false;
 			Notify (binding);
 		}
 

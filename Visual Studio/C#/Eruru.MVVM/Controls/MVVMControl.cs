@@ -31,7 +31,8 @@ namespace Eruru.MVVM {
 
 			set => InitializeBinding (ref _Text, value,
 				propertyValue => Control.Text = MVVMApi.ToString (propertyValue), () => Control.Text,
-				() => Control.TextChanged += Control_TextChanged, () => Control.TextChanged -= Control_TextChanged
+				() => Control.TextChanged += Control_TextChanged, () => Control.TextChanged -= Control_TextChanged,
+				() => Control.LostFocus += Control_LostFocus, () => Control.LostFocus -= Control_LostFocus
 			);
 
 		}
@@ -68,6 +69,10 @@ namespace Eruru.MVVM {
 
 		private void Control_TextChanged (object sender, EventArgs e) {
 			Changed (Text, Control.Text);
+		}
+
+		private void Control_LostFocus (object sender, EventArgs e) {
+			Changed (Text, Control.Text, MVVMBindingChangedType.LostFocus);
 		}
 
 		private void Control_VisibleChanged (object sender, EventArgs e) {

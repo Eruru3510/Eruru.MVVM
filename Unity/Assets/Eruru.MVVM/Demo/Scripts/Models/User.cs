@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
+﻿namespace Eruru.MVVM.Demo {
 
-namespace Eruru.MVVM.Demo {
-
-	public class User : INotifyPropertyChanged {
+	public class User {
 
 		public string Account {
 
@@ -12,7 +10,6 @@ namespace Eruru.MVVM.Demo {
 
 			set {
 				_Account = value;
-				this.RaisePropertyChanged ();
 			}
 
 		}
@@ -24,11 +21,9 @@ namespace Eruru.MVVM.Demo {
 
 			set {
 				_Password = value;
-				this.RaisePropertyChanged ();
 			}
 
 		}
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		string _Account;
 		string _Password;

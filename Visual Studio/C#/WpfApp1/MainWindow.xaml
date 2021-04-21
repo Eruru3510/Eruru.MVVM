@@ -7,7 +7,8 @@
 		mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Grid>
-		<TextBox HorizontalAlignment="Left" Height="23" Margin="283,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding User.Name}"/>
-
+		<TextBox HorizontalAlignment="Left" Height="23" Margin="283,180,0,0"  VerticalAlignment="Top" Width="120" Name="TextBox1" Text="{Binding User.Name}"/>
+		<TextBox HorizontalAlignment="Left" Height="23" Margin="283,230,0,0"  VerticalAlignment="Top" Width="120" Name="TextBox2" Text="{Binding Text, ElementName=TextBox1, UpdateSourceTrigger=LostFocus}"/>
+		<TextBox HorizontalAlignment="Left" Height="23" Margin="283,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding Text, ElementName=TextBox2}"/>
 	</Grid>
 </Window>

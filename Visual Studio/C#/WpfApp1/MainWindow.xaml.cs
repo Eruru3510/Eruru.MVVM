@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 
 namespace WpfApp1 {
@@ -8,8 +9,7 @@ namespace WpfApp1 {
 	public partial class MainWindow : Window {
 		public MainWindow () {
 			InitializeComponent ();
-			DataContext = new ViewModel () { User = new User () { Name = "1" } };
-			(DataContext as ViewModel).User = new User () { Name = "2" };
+			DataContext = new ViewModel ();
 		}
 	}
 
@@ -26,7 +26,7 @@ namespace WpfApp1 {
 
 		}
 
-		User _User;
+		User _User = new User ();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -40,12 +40,13 @@ namespace WpfApp1 {
 
 			set {
 				_Name = value;
+				Console.WriteLine ($"Set {nameof (Name)} = {value}");
 				PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (User)));
 			}
 
 		}
 
-		string _Name;
+		string _Name = "1";
 
 		public event PropertyChangedEventHandler PropertyChanged;
 	}

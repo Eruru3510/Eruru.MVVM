@@ -12,10 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\CallerMemberNameAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\ExtensionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bindings\MVVMBinding.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bindings\MVVMBindingElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bindings\MVVMBindingSource.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bindings\MVVMBindingValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MVVMItemsControlBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\MVVMBindingChangedType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\MVVMBindingType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\MVVMBindingUpdateSourceTrigger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INotifyCollectionChanged.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\MVVMBindingMode.cs" />
@@ -30,6 +30,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Enums\" />
   </ItemGroup>
 </Project>

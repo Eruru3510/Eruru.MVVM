@@ -11,7 +11,8 @@ namespace Eruru.MVVM {
 
 			set => InitializeBinding (ref _Value, value,
 				propertyValue => Control.Value = MVVMApi.ToInt (propertyValue), () => Control.Value,
-				() => Control.ValueChanged += Control_ValueChanged, () => Control.ValueChanged -= Control_ValueChanged
+				() => Control.ValueChanged += Control_ValueChanged, () => Control.ValueChanged -= Control_ValueChanged,
+				() => Control.LostFocus += Control_LostFocus, () => Control.LostFocus -= Control_LostFocus
 			);
 
 		}
@@ -45,6 +46,10 @@ namespace Eruru.MVVM {
 
 		private void Control_ValueChanged (object sender, EventArgs e) {
 			Changed (Value, Control.Value);
+		}
+
+		private void Control_LostFocus (object sender, EventArgs e) {
+			Changed (Value, Control.Value, MVVMBindingChangedType.LostFocus);
 		}
 
 	}

@@ -16,27 +16,28 @@ namespace WindowsFormsApp1 {
 			Form1ViewModel.Player = new Player () { Name = "Named" };
 			return;*/
 			MVVMControl mvvmTextBox1 = new MVVMControl (this, textBox1);
+			MVVMControl mvvmTextBox2 = new MVVMControl (this, textBox2) { Text = new MVVMBinding (mvvmTextBox1, "Text") };
 			new MVVMItemsControl (this, flowLayoutPanel1) {
 				DataTemplate = value => {
 					Label label = new Label () {
 						BorderStyle = BorderStyle.FixedSingle
 					};
 					return new MVVMControl (label) {
-						Text = new MVVMBindingSource ("Name"),
-						Click = new MVVMBindingSource ("OnClick"),
-						ClickParameter = new MVVMBindingSource ()
+						Text = new MVVMBinding ("Name"),
+						Click = new MVVMBinding ("OnClick"),
+						ClickParameter = new MVVMBinding ()
 					};
 				},
-				ItemsSource = new MVVMBindingSource ("Players")
+				ItemsSource = new MVVMBinding ("Players")
 			};
 			new MVVMComboBox (this, comboBox1) {
-				ItemsSource = new MVVMBindingSource ("Players")
+				ItemsSource = new MVVMBinding ("Players")
 			};
 			new MVVMControl (this, button1) {
-				Click = new MVVMBindingSource ("OnClickAdd"),
-				ClickParameter = new MVVMBindingElement (mvvmTextBox1, nameof (MVVMControl.Text))
+				Click = new MVVMBinding ("OnClickAdd"),
+				ClickParameter = new MVVMBinding (mvvmTextBox1, nameof (MVVMControl.Text))
 			};
-			new MVVMControl (this, button2) { Click = new MVVMBindingSource ("OnClickRemove") };
+			new MVVMControl (this, button2) { Click = new MVVMBinding ("OnClickRemove") };
 		}
 
 	}
