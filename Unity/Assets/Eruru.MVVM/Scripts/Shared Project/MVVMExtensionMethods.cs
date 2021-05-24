@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -16,23 +15,18 @@ namespace Eruru.MVVM {
 				propertyName = MVVMApi.GetCallerMemberName ();
 			}
 			Type type = notifyPropertyChanged.GetType ();
-			FieldInfo fieldInfo = type.GetField ("PropertyChanged", MVVMApi.BindingFlags);
-			if (fieldInfo == null) {
-				fieldInfo = type.BaseType.GetField ("PropertyChanged", MVVMApi.BindingFlags);
+			FieldInfo fieldInfo = null;
+			while (type != null) {
+				fieldInfo = type.GetField ("PropertyChanged", MVVMApi.BindingFlags);
+				type = type.BaseType;
+				if (fieldInfo != null) {
+					break;
+				}
 			}
 			PropertyChangedEventHandler propertyChangedEventHandler = fieldInfo.GetValue (notifyPropertyChanged) as PropertyChangedEventHandler;
 			if (propertyChangedEventHandler != null) {
 				propertyChangedEventHandler (notifyPropertyChanged, new PropertyChangedEventArgs (propertyName));
 			}
-		}
-
-		public static void Swap (this IList list, int left, int right) {
-			if (list == null) {
-				throw new ArgumentNullException ("list");
-			}
-			object temp = list[left];
-			list[left] = list[right];
-			list[right] = temp;
 		}
 
 	}

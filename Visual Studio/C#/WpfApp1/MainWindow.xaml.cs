@@ -1,54 +1,48 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace WpfApp1 {
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑
 	/// </summary>
 	public partial class MainWindow : Window {
+
 		public MainWindow () {
 			InitializeComponent ();
 			DataContext = new ViewModel ();
+		}
+
+		private void Button_Click (object sender, RoutedEventArgs e) {
+
 		}
 	}
 
 	class ViewModel : INotifyPropertyChanged {
 
-		public User User {
+		public string Text {
 
-			get => _User;
+			get {
+				Console.WriteLine ("Get");
+				return _Text;
+			}
 
 			set {
-				_User = value;
-				PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (User)));
+				Console.WriteLine ("Set");
+				_Text = value;
+				PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (Text)));
 			}
 
 		}
 
-		User _User = new User ();
+		string _Text = "默认值";
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-	}
-
-	class User : INotifyPropertyChanged {
-
-		public string Name {
-
-			get => _Name;
-
-			set {
-				_Name = value;
-				Console.WriteLine ($"Set {nameof (Name)} = {value}");
-				PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (User)));
-			}
-
-		}
-
-		string _Name = "1";
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
 
 }

@@ -79,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eruru.MVVM\Eruru.MVVM.csproj">
-      <Project>{56375134-fe87-4510-a89e-fef74acc0b69}</Project>
+      <Project>{2704c11c-0e31-4ac8-88ca-1f9a15716e8c}</Project>
       <Name>Eruru.MVVM</Name>
     </ProjectReference>
   </ItemGroup>

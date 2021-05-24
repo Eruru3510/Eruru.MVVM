@@ -25,17 +25,13 @@ namespace Eruru.MVVM {
 		}
 
 		public bool CanExecute (object parameter) {
-			if (_CanExecute == null) {
-				return true;
-			}
-			return _CanExecute (parameter);
+			return _CanExecute == null ? true : _CanExecute (parameter);
 		}
 
 		public void Execute (object parameter) {
-			if (_Execute == null) {
-				return;
+			if (_Execute != null) {
+				_Execute (parameter);
 			}
-			_Execute (parameter);
 		}
 
 	}

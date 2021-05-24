@@ -2,22 +2,35 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using UnityEngine;
 
 namespace Eruru.MVVM {
 
 	public class MVVMBinding {
 
-		public MVVMBindingType Type {
+		public MVVMControl Element {
 
 			get {
-				return _Type;
+				return _Element;
 			}
 
-			private set {
-				_Type = value;
+			set {
+				_Element = value;
 			}
 
 		}
+		public string Path {
+
+			get {
+				return _Path;
+			}
+
+			set {
+				_Path = value;
+			}
+
+		}
+		public string TargetPropertyName { get; internal set; }
 		public MVVMBindingMode Mode {
 
 			get {
@@ -40,241 +53,160 @@ namespace Eruru.MVVM {
 			}
 
 		}
-		public string TargetPropertyName { get; internal set; }
-		public string PropertyName { get; internal set; }
-
-		internal MVVMControl Control;
-		internal MVVMFunc<object> GetTargetValueFunc;
-		internal Action<object> SetTargetValueAction;
-		internal MVVMBindingMode DefaultMode;
-		internal MVVMBindingUpdateSourceTrigger DefaultUpdateSourceTrigger;
-
-		List<INotifyPropertyChanged> NotifyPropertyChangeds {
+		public MVVMBindingRelativeSource RelativeSource {
 
 			get {
-				return _NotifyPropertyChangeds ?? (_NotifyPropertyChangeds = new List<INotifyPropertyChanged> ());
+				return _RelativeSource;
+			}
+
+			set {
+				_RelativeSource = value;
 			}
 
 		}
+
+		internal MVVMControl Control;
+		internal MVVMFunc<object> OnGetTargetValue;
+		internal Action<object> OnSetTargetValue;
+		internal MVVMAction OnRebinding;
+		internal MVVMBindingMode DefaultMode;
+		internal MVVMBindingUpdateSourceTrigger DefaultUpdateSourceTrigger;
+		internal PropertyInfo PropertyInfo;
+		internal bool BlockOnChanged;
+		internal bool BlockSetValue;
+
+		List<INotifyPropertyChanged> NotifyPropertyChangeds = new List<INotifyPropertyChanged> ();
+		MVVMControl _Element;
+		string _Path;
+		MVVMBindingRelativeSource _RelativeSource;
+		MVVMBindingMode _Mode = MVVMBindingMode.Default;
+		MVVMBindingUpdateSourceTrigger _UpdateSourceTrigger = MVVMBindingUpdateSourceTrigger.Default;
+		string PropertyName;
 		object Instance;
 		object Value;
 
-		List<INotifyPropertyChanged> _NotifyPropertyChangeds;
-		MVVMBindingMode _Mode;
-		MVVMBindingType _Type;
-		MVVMBindingUpdateSourceTrigger _UpdateSourceTrigger;
-		string Path;
-		PropertyInfo PropertyInfo;
-
 		public MVVMBinding () {
-			Type = MVVMBindingType.Source;
+
 		}
 		public MVVMBinding (object value) {
 			Value = value;
-			Type = MVVMBindingType.Source;
-			Path = string.Empty;
+			_Path = string.Empty;
 		}
 		public MVVMBinding (string path) {
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Path = path;
-			Type = MVVMBindingType.Source;
+			_Path = path;
 		}
 		public MVVMBinding (string path, MVVMBindingMode mode) {
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Path = path;
-			Mode = mode;
-			Type = MVVMBindingType.Source;
+			_Path = path;
+			_Mode = mode;
 		}
 		public MVVMBinding (string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Path = path;
-			UpdateSourceTrigger = updateSourceTrigger;
-			Type = MVVMBindingType.Source;
+			_Path = path;
+			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Path = path;
-			Mode = mode;
-			UpdateSourceTrigger = updateSourceTrigger;
-			Type = MVVMBindingType.Source;
+			_Path = path;
+			_Mode = mode;
+			_UpdateSourceTrigger = updateSourceTrigger;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource) {
+			_RelativeSource = relativeSource;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingMode mode) {
+			_RelativeSource = relativeSource;
+			_Mode = mode;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
+			_RelativeSource = relativeSource;
+			_UpdateSourceTrigger = updateSourceTrigger;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
+			_RelativeSource = relativeSource;
+			_Mode = mode;
+			_UpdateSourceTrigger = updateSourceTrigger;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path) {
+			_RelativeSource = relativeSource;
+			_Path = path;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingMode mode) {
+			_RelativeSource = relativeSource;
+			_Path = path;
+			_Mode = mode;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
+			_RelativeSource = relativeSource;
+			_Path = path;
+			_UpdateSourceTrigger = updateSourceTrigger;
+		}
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
+			_RelativeSource = relativeSource;
+			_Path = path;
+			_Mode = mode;
+			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (MVVMControl control, string path) {
-			if (control == null) {
-				throw new ArgumentNullException ("control");
-			}
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Instance = control;
-			Path = path;
-			Type = MVVMBindingType.Element;
+			_Element = control;
+			_Path = path;
 		}
 		public MVVMBinding (MVVMControl control, string path, MVVMBindingMode mode) {
-			if (control == null) {
-				throw new ArgumentNullException ("control");
-			}
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Instance = control;
-			Path = path;
-			Mode = mode;
-			Type = MVVMBindingType.Element;
+			_Element = control;
+			_Path = path;
+			_Mode = mode;
 		}
 		public MVVMBinding (MVVMControl control, string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
-			if (control == null) {
-				throw new ArgumentNullException ("control");
-			}
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Instance = control;
-			Path = path;
-			UpdateSourceTrigger = updateSourceTrigger;
-			Type = MVVMBindingType.Element;
+			_Element = control;
+			_Path = path;
+			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (MVVMControl control, string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) {
-			if (control == null) {
-				throw new ArgumentNullException ("control");
-			}
-			if (path == null) {
-				throw new ArgumentNullException ("path");
-			}
-			Instance = control;
-			Path = path;
-			Mode = mode;
-			UpdateSourceTrigger = updateSourceTrigger;
-			Type = MVVMBindingType.Element;
-		}
-
-		public object GetValue () {
-			switch (Type) {
-				case MVVMBindingType.Source:
-					if (PropertyInfo == null) {
-						return Path == null ? Instance : Value;
-					}
-					return PropertyInfo.GetValue (Instance, null);
-				case MVVMBindingType.Element: {
-					object instance = PropertyInfo.GetValue (Instance, null);
-					if (instance is MVVMBinding) {
-						return ((MVVMBinding)instance).GetTargetValue ();
-					}
-					return instance;
-				}
-				default:
-					throw new NotImplementedException ();
-			}
-		}
-
-		public void SetValue (object value) {
-			switch (Type) {
-				case MVVMBindingType.Source:
-					if (PropertyInfo == null) {
-						if (Path == null) {
-							Instance = value;
-							break;
-						}
-						Value = value;
-						break;
-					}
-					PropertyInfo.SetValue (Instance, Convert.ChangeType (value, PropertyInfo.PropertyType), null);
-					break;
-				case MVVMBindingType.Element: {
-					object instance = PropertyInfo.GetValue (Instance, null);
-					if (instance is MVVMBinding) {
-						((MVVMBinding)instance).SetTargetValue (value);
-						break;
-					}
-					PropertyInfo.SetValue (instance, Convert.ChangeType (value, PropertyInfo.PropertyType), null);
-					break;
-				}
-				default:
-					throw new NotImplementedException ();
-			}
+			_Element = control;
+			_Path = path;
+			_Mode = mode;
+			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 
 		public object GetTargetValue () {
-			return GetTargetValueFunc == null ? null : GetTargetValueFunc ();
+			if (OnGetTargetValue == null) {
+				return Value;
+			}
+			return OnGetTargetValue ();
 		}
 
 		public void SetTargetValue (object value) {
-			if (SetTargetValueAction != null) {
-				SetTargetValueAction (value);
-				Control.Changed (this, value);
+			Value = value;
+			if (OnSetTargetValue != null) {
+				OnSetTargetValue (value);
 			}
+		}
+
+		public object GetValue () {
+			if (PropertyInfo == null) {
+				return Path == null ? Instance : Value;
+			}
+			object value = PropertyInfo.GetValue (Instance, null);
+			if (value is MVVMBinding) {
+				return ((MVVMBinding)value).GetTargetValue ();
+			}
+			return value;
+		}
+
+		public void SetValue (object value) {
+			if (BlockSetValue) {
+				return;
+			}
+			if (PropertyInfo == null) {
+				if (Path == null) {
+					Instance = value;
+					return;
+				}
+				Value = value;
+				return;
+			}
+			MVVMApi.SetPropertyValue (PropertyInfo, Instance, value);
 		}
 
 		public void UpdateSource () {
-			Control.Changed (this, GetTargetValue (), MVVMBindingChangedType.UpdateSource);
-		}
-
-		internal void Rebinding (object dataContext) {
-			UnregisterPropertyChanged ();
-			switch (Type) {
-				case MVVMBindingType.Source: {
-					PropertyInfo = null;
-					Instance = dataContext;
-					if (dataContext == null || string.IsNullOrEmpty (Path)) {
-						break;
-					}
-					string[] nodes = Path.Split ('.');
-					object instance = dataContext;
-					Type type = dataContext.GetType ();
-					for (int i = 0; i < nodes.Length; i++) {
-						PropertyInfo propertyInfo = type.GetProperty (nodes[i]);
-						if (propertyInfo == null) {
-							throw new Exception (string.Format ("{0}没有{1}属性访问器", Instance, nodes[i]));
-						}
-						if (instance is INotifyPropertyChanged) {
-							INotifyPropertyChanged notifyPropertyChanged = (INotifyPropertyChanged)instance;
-							notifyPropertyChanged.PropertyChanged += NotifyPropertyChanged_PropertyChanged;
-							NotifyPropertyChangeds.Add (notifyPropertyChanged);
-						}
-						if (i < nodes.Length - 1) {
-							instance = propertyInfo.GetValue (instance, null);
-							if (instance == null) {
-								break;
-							}
-							type = instance.GetType ();
-							continue;
-						}
-						Instance = instance;
-						PropertyInfo = propertyInfo;
-						PropertyName = nodes[i];
-					}
-					break;
-				}
-				case MVVMBindingType.Element: {
-					PropertyInfo = Instance.GetType ().GetProperty (Path, MVVMApi.BindingFlags);
-					if (PropertyInfo == null) {
-						throw new Exception (string.Format ("{0}没有{1}属性访问器", Instance, Path));
-					}
-					if (Instance is INotifyPropertyChanged) {
-						INotifyPropertyChanged notifyPropertyChanged = (INotifyPropertyChanged)Instance;
-						notifyPropertyChanged.PropertyChanged += NotifyPropertyChanged_PropertyChanged;
-						NotifyPropertyChangeds.Add (notifyPropertyChanged);
-					}
-					break;
-				}
-				default:
-					throw new NotImplementedException ();
-			}
-			SetTargetValue (GetValue ());
-		}
-
-		internal void UnregisterPropertyChanged () {
-			foreach (INotifyPropertyChanged notifyPropertyChanged in NotifyPropertyChangeds) {
-				notifyPropertyChanged.PropertyChanged -= NotifyPropertyChanged_PropertyChanged;
-			}
-			NotifyPropertyChangeds.Clear ();
+			Control.OnChanged (this, GetTargetValue (), MVVMBindingOnChangeType.UpdateSource);
 		}
 
 		internal MVVMBindingMode GetMode () {
@@ -285,62 +217,106 @@ namespace Eruru.MVVM {
 			return UpdateSourceTrigger == MVVMBindingUpdateSourceTrigger.Default ? DefaultUpdateSourceTrigger : UpdateSourceTrigger;
 		}
 
-		protected void NotifyPropertyChanged_PropertyChanged (object sender, PropertyChangedEventArgs e) {
+		internal void Rebinding (object dataContext) {
+			Debinding ();
+			Instance = dataContext;
+			object instance;
+			if (RelativeSource == null) {
+				instance = Element == null ? Instance : Element;
+			} else {
+				instance = Control;
+				switch (RelativeSource.Mode) {
+					case MVVMBindingRelativeSourceMode.Self:
+						break;
+					case MVVMBindingRelativeSourceMode.FindAncestor:
+						int ancestorCount = 0;
+						while (instance != null) {
+							if (RelativeSource.AncestorType == null || RelativeSource.AncestorType.IsInstanceOfType (instance)) {
+								ancestorCount++;
+								if (ancestorCount == RelativeSource.AncestorLevel) {
+									Instance = instance;
+									break;
+								}
+							}
+							if (instance is MVVMControl) {
+								MVVMControl control = (MVVMControl)instance;
+								if (control.Parent == null) {
+									return;
+								}
+								instance = control.Parent;
+								continue;
+							}
+							throw new Exception ("遇到了非MVVMControl元素");
+						}
+						break;
+					default:
+						throw new NotImplementedException ();
+				}
+			}
+			if (instance != null && !string.IsNullOrEmpty (Path)) {
+				Type type = instance.GetType ();
+				string[] nodes = Path.Split (new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+				for (int i = 0; i < nodes.Length; i++) {
+					if (instance is MVVMBinding) {
+						MVVMBinding binding = (MVVMBinding)instance;
+						instance = binding.GetTargetValue ();
+						if (instance == null) {
+							break;
+						}
+						type = instance.GetType ();
+					}
+					PropertyInfo propertyInfo = type.GetProperty (nodes[i], BindingFlags.Instance | BindingFlags.Public);
+					if (propertyInfo == null) {
+						throw new Exception (string.Format ("{0}的属性{1}绑定路径{2}失败，{3}下没有公开的可读写属性{4}", Control.Name, TargetPropertyName, Path, instance, nodes[i]));
+					}
+					if (instance is INotifyPropertyChanged) {
+						INotifyPropertyChanged notifyPropertyChanged = (INotifyPropertyChanged)instance;
+						notifyPropertyChanged.PropertyChanged += NotifyPropertyChanged_PropertyChanged;
+						NotifyPropertyChangeds.Add (notifyPropertyChanged);
+					}
+					if (i == nodes.Length - 1) {
+						PropertyName = nodes[i];
+						PropertyInfo = propertyInfo;
+						Instance = instance;
+						break;
+					}
+					instance = propertyInfo.GetValue (instance, null);
+					if (instance == null) {
+						break;
+					}
+					type = instance.GetType ();
+				}
+			}
+			BlockSetValue = true;
+			SetTargetValue (GetValue ());
+			BlockSetValue = false;
+		}
+
+		internal void Debinding () {
+			PropertyInfo = null;
+			for (int i = 0; i < NotifyPropertyChangeds.Count; i++) {
+				NotifyPropertyChangeds[i].PropertyChanged -= NotifyPropertyChanged_PropertyChanged;
+			}
+			NotifyPropertyChangeds.Clear ();
+		}
+
+		private void NotifyPropertyChanged_PropertyChanged (object sender, PropertyChangedEventArgs e) {
 			switch (GetMode ()) {
 				case MVVMBindingMode.TwoWay:
 				case MVVMBindingMode.OneWay:
-					if (e.PropertyName != PropertyName) {
-						Rebinding (Control.ParentDataContext);
+					Type type = sender.GetType ();
+					for (int i = 0; i < NotifyPropertyChangeds.Count; i++) {
+						if (NotifyPropertyChangeds[i].GetType ().IsAssignableFrom (type) && e.PropertyName == PropertyName) {
+							if (i == NotifyPropertyChangeds.Count - 1) {
+								SetTargetValue (GetValue ());
+								break;
+							}
+							OnRebinding ();
+							break;
+						}
 					}
-					SetTargetValue (GetValue ());
 					break;
 			}
-		}
-
-		public static implicit operator MVVMBinding (byte value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (ushort value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (uint value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (ulong value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (sbyte value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (short value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (int value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (long value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (float value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (double value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (decimal value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (bool value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (char value) {
-			return new MVVMBinding (value);
-		}
-		public static implicit operator MVVMBinding (string value) {
-			return new MVVMBinding ((object)value);
-		}
-		public static implicit operator MVVMBinding (DateTime value) {
-			return new MVVMBinding (value);
 		}
 
 	}
