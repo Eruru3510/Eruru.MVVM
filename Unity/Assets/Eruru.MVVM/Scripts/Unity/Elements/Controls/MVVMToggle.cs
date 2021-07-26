@@ -14,7 +14,7 @@ namespace Eruru.MVVM {
 			set {
 				SetBinding (
 					ref _IsOn, value,
-					() => Control.isOn, targetValue => Control.isOn = MVVMApi.ToBool (targetValue),
+					() => Control.isOn, targetValue => Control.isOn = MVVMAPI.ToBool (targetValue),
 					() => Control.onValueChanged.AddListener (Control_OnValueChanged), () => Control.onValueChanged.RemoveListener (Control_OnValueChanged)
 				);
 			}

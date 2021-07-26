@@ -73,7 +73,7 @@ namespace Eruru.MVVM {
 		internal MVVMBindingUpdateSourceTrigger DefaultUpdateSourceTrigger;
 		internal PropertyInfo PropertyInfo;
 		internal bool BlockOnChanged;
-		internal bool BlockSetValue;
+		internal object Value;
 
 		List<INotifyPropertyChanged> NotifyPropertyChangeds = new List<INotifyPropertyChanged> ();
 		MVVMControl _Element;
@@ -83,7 +83,7 @@ namespace Eruru.MVVM {
 		MVVMBindingUpdateSourceTrigger _UpdateSourceTrigger = MVVMBindingUpdateSourceTrigger.Default;
 		string PropertyName;
 		object Instance;
-		object Value;
+		bool BlockSetValue;
 
 		public MVVMBinding () {
 
@@ -171,11 +171,24 @@ namespace Eruru.MVVM {
 			}
 			return OnGetTargetValue ();
 		}
+		public T GetTargetValue<T> (T defaultValue = default (T)) {
+			object value = GetTargetValue ();
+			try {
+				return (T)value;
+			} catch {
+				return defaultValue;
+			}
+		}
 
 		public void SetTargetValue (object value) {
 			Value = value;
 			if (OnSetTargetValue != null) {
+				BlockOnChanged = true;
 				OnSetTargetValue (value);
+				BlockOnChanged = false;
+			}
+			if (Control != null) {
+				Control.OnChanged (this, value);
 			}
 		}
 
@@ -188,6 +201,14 @@ namespace Eruru.MVVM {
 				return ((MVVMBinding)value).GetTargetValue ();
 			}
 			return value;
+		}
+		public T GetValue<T> (T defaultValue = default (T)) {
+			object value = GetValue ();
+			try {
+				return (T)value;
+			} catch {
+				return defaultValue;
+			}
 		}
 
 		public void SetValue (object value) {
@@ -202,11 +223,22 @@ namespace Eruru.MVVM {
 				Value = value;
 				return;
 			}
-			MVVMApi.SetPropertyValue (PropertyInfo, Instance, value);
+			MVVMAPI.SetPropertyValue (PropertyInfo, Instance, value);
 		}
 
 		public void UpdateSource () {
-			Control.OnChanged (this, GetTargetValue (), MVVMBindingOnChangeType.UpdateSource);
+			switch (GetMode ()) {
+				case MVVMBindingMode.TwoWay:
+				case MVVMBindingMode.OneWayToSource:
+					break;
+				default:
+					return;
+			}
+			SetValue (GetTargetValue ());
+		}
+
+		public void UpdateTarget () {
+			SetTargetValue (GetValue ());
 		}
 
 		internal MVVMBindingMode GetMode () {
@@ -306,9 +338,13 @@ namespace Eruru.MVVM {
 				case MVVMBindingMode.OneWay:
 					Type type = sender.GetType ();
 					for (int i = 0; i < NotifyPropertyChangeds.Count; i++) {
-						if (NotifyPropertyChangeds[i].GetType ().IsAssignableFrom (type) && e.PropertyName == PropertyName) {
+						if (NotifyPropertyChangeds[i].GetType ().IsAssignableFrom (type)) {
 							if (i == NotifyPropertyChangeds.Count - 1) {
-								SetTargetValue (GetValue ());
+								if (e.PropertyName == PropertyName) {
+									BlockSetValue = true;
+									SetTargetValue (GetValue ());
+									BlockSetValue = false;
+								}
 								break;
 							}
 							OnRebinding ();

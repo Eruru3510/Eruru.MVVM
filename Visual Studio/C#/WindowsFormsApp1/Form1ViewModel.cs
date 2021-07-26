@@ -1,37 +1,32 @@
-﻿using System.ComponentModel;
-using Eruru.MVVM;
+﻿using Eruru.MVVM;
+using System;
+using System.ComponentModel;
 
 namespace WindowsFormsApp1 {
 
-	public class Form1ViewModel : INotifyPropertyChanged {
+	class Form1ViewModel : INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		public string Text { get; set; }
-		public Player Player {
+		public MVVMObservableCollection<Model> Books { get; set; } = new MVVMObservableCollection<Model> ();
+		public MVVMRelayCommand OnAdd {
 
-			get => _Player;
+			get {
+				Console.WriteLine ("get onadd");
+				return _OnAdd;
+			}
 
 			set {
-				_Player = value;
-				this.RaisePropertyChanged ();
+				Console.WriteLine ("set onadd");
+				_OnAdd = value;
 			}
 
 		}
-		public ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player> ();
-		public MVVMRelayCommand OnClickAdd { get; set; }
-		public MVVMRelayCommand OnClickRemove { get; set; }
 
-		Player _Player;
+		MVVMRelayCommand _OnAdd;
 
 		public Form1ViewModel () {
-			Text = "默认值";
-			Players.Add (new Player () { Name = "玩家1" });
-			Players.Add (new Player () { Name = "玩家2" });
-			OnClickAdd = new MVVMRelayCommand (value => {
-				Players.Add (new Player () { Name = value?.ToString () });
-			});
-			OnClickRemove = new MVVMRelayCommand (value => {
-				Players.RemoveAt (0);
+			OnAdd = new MVVMRelayCommand (value => {
+				new FormAdd ().ShowDialog ();
 			});
 		}
 

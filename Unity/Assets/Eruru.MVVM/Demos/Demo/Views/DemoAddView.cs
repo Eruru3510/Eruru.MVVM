@@ -66,16 +66,16 @@ namespace Eruru.MVVM.Demo {
 						MinValue = new MVVMBinding ("MinValue"),
 						Value = new MVVMBinding ("Value", MVVMBindingMode.OneWayToSource)
 					}.Add (
-						new MVVMTrigger (new MVVMBinding ("Value"), value => MVVMApi.ToFloat (value) <= 0.5).Add (
+						new MVVMTrigger (new MVVMBinding ("Value"), value => MVVMAPI.ToFloat (value) <= 0.5).Add (
 							new MVVMSetter ("HandleRectColor", Color.red)
 						),
 						new MVVMTrigger (new MVVMBinding (mvvmSlider, "Value"), value => {
-							float floatValue = MVVMApi.ToFloat (value);
+							float floatValue = MVVMAPI.ToFloat (value);
 							return floatValue > 0.5 && floatValue < 1.5;
 						}).Add (
 							new MVVMSetter ("HandleRectColor", Color.yellow)
 						),
-						new MVVMTrigger ("Value", value => MVVMApi.ToFloat (value) >= 1.5).Add (
+						new MVVMTrigger ("Value", value => MVVMAPI.ToFloat (value) >= 1.5).Add (
 							new MVVMSetter ("HandleRectColor", Color.green)
 						)
 					),

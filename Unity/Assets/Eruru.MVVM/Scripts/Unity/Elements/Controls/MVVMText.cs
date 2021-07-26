@@ -12,7 +12,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Text, value, () => Control.text, targetValue => Control.text = MVVMApi.ToString (targetValue));
+				SetBinding (ref _Text, value, () => Control.text, targetValue => Control.text = MVVMAPI.ToString (targetValue));
 			}
 
 		}
@@ -23,7 +23,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Color, value, () => Control.color, targetValue => Control.color = MVVMApi.ToColor (targetValue));
+				SetBinding (ref _Color, value, () => Control.color, targetValue => Control.color = MVVMAPI.ToColor (targetValue));
 			}
 
 		}

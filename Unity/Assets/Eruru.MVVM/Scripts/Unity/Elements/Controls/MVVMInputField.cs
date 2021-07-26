@@ -14,7 +14,7 @@ namespace Eruru.MVVM {
 			set {
 				SetBinding (
 					ref _Text, value,
-					() => Control.text, targetValue => Control.text = MVVMApi.ToString (targetValue),
+					() => Control.text, targetValue => Control.text = MVVMAPI.ToString (targetValue),
 					() => Control.onValueChange.AddListener (Control_OnValueChanged), () => Control.onValueChange.RemoveListener (Control_OnValueChanged),
 					() => Control.onEndEdit.AddListener (Control_OnEndEdit), () => Control.onEndEdit.RemoveListener (Control_OnEndEdit)
 				);
@@ -33,7 +33,7 @@ namespace Eruru.MVVM {
 		}
 
 		void Control_OnEndEdit (object value) {
-			OnChanged (Text, value, MVVMBindingOnChangeType.LostFocus);
+			OnChanged (Text, value, MVVMBindingOnChangedType.LostFocus);
 		}
 
 	}

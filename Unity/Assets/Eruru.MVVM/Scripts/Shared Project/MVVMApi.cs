@@ -10,7 +10,7 @@ namespace Eruru.MVVM {
 	public delegate TResult MVVMFunc<in T, out TResult> (T arg);
 	public delegate TResult MVVMFunc<in T1, in T2, out TResult> (T1 arg1, T2 arg2);
 
-	static class MVVMApi {
+	static class MVVMAPI {
 
 		public static BindingFlags BindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 

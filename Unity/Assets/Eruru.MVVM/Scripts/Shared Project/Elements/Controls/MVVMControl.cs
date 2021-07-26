@@ -16,7 +16,7 @@ namespace Eruru.MVVM {
 			Control = control;
 		}
 
-		public MVVMControl Add (MVVMElement element) {
+		public virtual MVVMControl Add (MVVMElement element) {
 			element.Parent = this;
 			Elements.Add (element);
 			element.DataContext.Rebinding (DataContext.GetTargetValue ());

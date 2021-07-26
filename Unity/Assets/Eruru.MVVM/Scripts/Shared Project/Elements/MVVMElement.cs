@@ -20,11 +20,11 @@ namespace Eruru.MVVM {
 				SetBinding (
 					ref _DataContext, value,
 					null, targetValue => {
-						for (int i = 0; i < Elements.Count; i++) {
-							Elements[i].DataContext.SetTargetValue (targetValue);
-						}
 						if (OnDataContextChanged != null) {
 							OnDataContextChanged (targetValue);
+						}
+						for (int i = 0; i < Elements.Count; i++) {
+							Elements[i].DataContext.SetTargetValue (targetValue);
 						}
 					},
 					null, null,
@@ -86,23 +86,12 @@ namespace Eruru.MVVM {
 				return;
 			}
 			if (propertyName == null) {
-				propertyName = MVVMApi.GetCallerMemberName ();
+				propertyName = MVVMAPI.GetCallerMemberName ();
 			}
 			binding.Control = this as MVVMControl;
 			binding.TargetPropertyName = propertyName;
 			binding.OnGetTargetValue = getTargetValue;
-			if (setTargetValue != null) {
-				binding.OnSetTargetValue = targetValue => {
-					if (setTargetValue != null) {
-						value.BlockOnChanged = true;
-						setTargetValue (targetValue);
-						value.BlockOnChanged = false;
-					}
-					value.BlockSetValue = true;
-					OnChanged (value, targetValue);
-					value.BlockSetValue = false;
-				};
-			}
+			binding.OnSetTargetValue = setTargetValue;
 			binding.OnRebinding = () => value.Rebinding (DataContext.GetTargetValue ());
 			if (registerChanged == null) {
 				value.DefaultMode = MVVMBindingMode.OneWay;
@@ -123,8 +112,8 @@ namespace Eruru.MVVM {
 			OnDataContextChanged += binding.Rebinding;
 		}
 
-		internal protected void OnChanged (MVVMBinding binding, object value, MVVMBindingOnChangeType changeType = MVVMBindingOnChangeType.PropertyChanged) {
-			if (binding.BlockOnChanged) {
+		internal protected void OnChanged (MVVMBinding binding, object value, MVVMBindingOnChangedType changeType = MVVMBindingOnChangedType.PropertyChanged) {
+			if (binding.BlockOnChanged || binding.Value == value) {
 				return;
 			}
 			switch (binding.GetMode ()) {
@@ -132,15 +121,12 @@ namespace Eruru.MVVM {
 				case MVVMBindingMode.OneWayToSource:
 					switch (binding.GetUpdateSourceTrigger ()) {
 						case MVVMBindingUpdateSourceTrigger.PropertyChanged:
-							binding.SetValue (value);
-							break;
-						case MVVMBindingUpdateSourceTrigger.LostFocus:
-							if (changeType == MVVMBindingOnChangeType.LostFocus) {
+							if (changeType == MVVMBindingOnChangedType.PropertyChanged) {
 								binding.SetValue (value);
 							}
 							break;
-						case MVVMBindingUpdateSourceTrigger.Explicit:
-							if (changeType == MVVMBindingOnChangeType.UpdateSource) {
+						case MVVMBindingUpdateSourceTrigger.LostFocus:
+							if (changeType == MVVMBindingOnChangedType.LostFocus) {
 								binding.SetValue (value);
 							}
 							break;

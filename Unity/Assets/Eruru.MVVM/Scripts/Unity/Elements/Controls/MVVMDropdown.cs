@@ -14,7 +14,7 @@ namespace Eruru.MVVM {
 			set {
 				SetBinding (
 					ref _Value, value,
-					() => Control.value, targetValue => Control.value = MVVMApi.ToInt (targetValue),
+					() => Control.value, targetValue => Control.value = MVVMAPI.ToInt (targetValue),
 					() => Control.onValueChanged.AddListener (Control_OnValueChanged), () => Control.onValueChanged.RemoveListener (Control_OnValueChanged)
 				);
 			}
@@ -31,7 +31,7 @@ namespace Eruru.MVVM {
 			if (value is Dropdown.OptionData) {
 				return value;
 			}
-			return new Dropdown.OptionData (MVVMApi.ToString (value));
+			return new Dropdown.OptionData (MVVMAPI.ToString (value));
 		}
 
 		protected override void Add (object value) {

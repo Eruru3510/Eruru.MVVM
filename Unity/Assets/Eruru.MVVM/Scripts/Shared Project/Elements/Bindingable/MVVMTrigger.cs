@@ -52,7 +52,7 @@ namespace Eruru.MVVM {
 					return;
 				}
 				IComparable a = value as IComparable;
-				IComparable b = MVVMApi.ChangeType (value, value.GetType ()) as IComparable;
+				IComparable b = MVVMAPI.ChangeType (value, value.GetType ()) as IComparable;
 				if (a == null || b == null) {
 					return;
 				}

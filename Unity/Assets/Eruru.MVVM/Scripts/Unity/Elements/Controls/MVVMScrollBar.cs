@@ -14,7 +14,7 @@ namespace Eruru.MVVM {
 			set {
 				SetBinding (
 					ref _Value, value,
-					() => Control.value, targetValue => Control.value = MVVMApi.ToFloat (targetValue),
+					() => Control.value, targetValue => Control.value = MVVMAPI.ToFloat (targetValue),
 					() => Control.onValueChanged.AddListener (Control_OnValueChanged), () => Control.onValueChanged.RemoveListener (Control_OnValueChanged)
 				);
 			}
@@ -27,7 +27,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Size, value, () => Control.size, targetValue => Control.size = MVVMApi.ToFloat (targetValue));
+				SetBinding (ref _Size, value, () => Control.size, targetValue => Control.size = MVVMAPI.ToFloat (targetValue));
 			}
 
 		}
@@ -38,7 +38,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _NumberOfSteps, value, () => Control.numberOfSteps, targetValue => Control.numberOfSteps = MVVMApi.ToInt (targetValue));
+				SetBinding (ref _NumberOfSteps, value, () => Control.numberOfSteps, targetValue => Control.numberOfSteps = MVVMAPI.ToInt (targetValue));
 			}
 
 		}

@@ -14,7 +14,7 @@ namespace Eruru.MVVM {
 			set {
 				SetBinding (
 					ref _Value, value,
-					() => Control.value, targetValue => Control.value = MVVMApi.ToFloat (targetValue),
+					() => Control.value, targetValue => Control.value = MVVMAPI.ToFloat (targetValue),
 					() => Control.onValueChanged.AddListener (Control_OnValueChanged), () => Control.onValueChanged.RemoveListener (Control_OnValueChanged)
 				);
 			}
@@ -27,7 +27,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _MaxValue, value, () => Control.maxValue, targetValue => Control.maxValue = MVVMApi.ToFloat (targetValue));
+				SetBinding (ref _MaxValue, value, () => Control.maxValue, targetValue => Control.maxValue = MVVMAPI.ToFloat (targetValue));
 			}
 
 		}
@@ -38,7 +38,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _MinValue, value, () => Control.minValue, targetValue => Control.minValue = MVVMApi.ToFloat (targetValue));
+				SetBinding (ref _MinValue, value, () => Control.minValue, targetValue => Control.minValue = MVVMAPI.ToFloat (targetValue));
 			}
 
 		}
@@ -49,7 +49,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _HandleRectColor, value, () => HandleRectImage.color, targetValue => HandleRectImage.color = MVVMApi.ToColor (targetValue));
+				SetBinding (ref _HandleRectColor, value, () => HandleRectImage.color, targetValue => HandleRectImage.color = MVVMAPI.ToColor (targetValue));
 			}
 
 		}
