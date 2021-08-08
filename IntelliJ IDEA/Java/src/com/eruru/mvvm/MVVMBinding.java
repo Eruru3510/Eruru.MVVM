@@ -249,14 +249,13 @@ public class MVVMBinding implements Serializable {
 				} catch (Exception exception) {
 					exception.printStackTrace ();
 				}
-				if (value instanceof MVVMBinding) {
+				if (getMethod.getReturnType () == MVVMBinding.class) {
 					return ((MVVMBinding) value).getTargetValue ();
 				}
 				return value;
 			default:
 				throw new UnsupportedOperationException (type.toString ());
 		}
-
 	}
 
 	public <T> T getSourceValue (Class<T> type) {
@@ -290,8 +289,8 @@ public class MVVMBinding implements Serializable {
 
 	public void updateSource () {
 		switch (getMode ()) {
-			case TwoWay:
-			case OneWayToSource:
+			case twoWay:
+			case oneWayToSource:
 				break;
 			default:
 				return;
@@ -333,7 +332,15 @@ public class MVVMBinding implements Serializable {
 			case Value:
 				break;
 			case Path: {
-				bindSource (isDataContext ? (control.getParent () == null ? null : control.getParent ().getDataContext ().getTargetValue ()) : control.getDataContext ().getTargetValue ());
+				Object dataContext = null;
+				if (isDataContext) {
+					if (control.getParent () != null) {
+						dataContext = control.getParent ().getDataContext ().getTargetValue ();
+					}
+				} else {
+					dataContext = control.getDataContext ().getTargetValue ();
+				}
+				bindSource (dataContext);
 				break;
 			}
 			case Element:
@@ -459,8 +466,8 @@ public class MVVMBinding implements Serializable {
 			return;
 		}
 		switch (getMode ()) {
-			case TwoWay:
-			case OneWay:
+			case twoWay:
+			case oneWay:
 				propertyName = MVVMAPI.firstCharToLowerCase (propertyName);
 				for (int i = 0; i < notifyPropertyChangeds.size (); i++) {
 					if (notifyPropertyChangeds.get (i).getKey () == sender && propertyName.equals (notifyPropertyChangeds.get (i).getValue ())) {

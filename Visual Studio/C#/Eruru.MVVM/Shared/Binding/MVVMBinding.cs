@@ -71,7 +71,7 @@ namespace Eruru.MVVM {
 			}
 
 		}
-		public MVVMBindingUpdateSourceTrigger UpdateSourceTrigger {
+		public MVVMUpdateSourceTrigger UpdateSourceTrigger {
 
 			get {
 				return _UpdateSourceTrigger;
@@ -83,10 +83,11 @@ namespace Eruru.MVVM {
 		internal string _TargetPropertyName;
 		internal MVVMFunc<object> OnGetTargetValue;
 		internal Action<object> OnSetTargetValue;
+		internal MVVMAction OnUnbind;
 		internal bool BlockOnChanged;
 		internal bool _IsDataContext;
 		internal MVVMBindingMode DefaultMode;
-		internal MVVMBindingUpdateSourceTrigger DefaultUpdateSourceTrigger;
+		internal MVVMUpdateSourceTrigger DefaultUpdateSourceTrigger;
 
 		readonly string _Path;
 		readonly string _ElementName;
@@ -94,7 +95,7 @@ namespace Eruru.MVVM {
 		readonly MVVMBindingRelativeSource _RelativeSource;
 		readonly List<KeyValuePair<INotifyPropertyChanged, string>> NotifyPropertyChangeds = new List<KeyValuePair<INotifyPropertyChanged, string>> ();
 		readonly MVVMBindingMode _Mode = MVVMBindingMode.Default;
-		readonly MVVMBindingUpdateSourceTrigger _UpdateSourceTrigger = MVVMBindingUpdateSourceTrigger.Default;
+		readonly MVVMUpdateSourceTrigger _UpdateSourceTrigger = MVVMUpdateSourceTrigger.Default;
 
 		object TargetValue;
 		object SourceValue;
@@ -111,10 +112,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (MVVMBindingMode mode) : this () {
 			_Mode = mode;
 		}
-		public MVVMBinding (MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this () {
+		public MVVMBinding (MVVMUpdateSourceTrigger updateSourceTrigger) : this () {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (mode) {
+		public MVVMBinding (MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (string path) : this () {
@@ -123,10 +124,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (string path, MVVMBindingMode mode) : this (path) {
 			_Mode = mode;
 		}
-		public MVVMBinding (string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (path) {
+		public MVVMBinding (string path, MVVMUpdateSourceTrigger updateSourceTrigger) : this (path) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (path, mode) {
+		public MVVMBinding (string path, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (path, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (object value) {
@@ -136,10 +137,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (object value, MVVMBindingMode mode) : this (value) {
 			_Mode = mode;
 		}
-		public MVVMBinding (object value, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (value) {
+		public MVVMBinding (object value, MVVMUpdateSourceTrigger updateSourceTrigger) : this (value) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (object value, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (value, mode) {
+		public MVVMBinding (object value, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (value, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (MVVMBindingRelativeSource relativeSource) {
@@ -149,10 +150,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingMode mode) : this (relativeSource) {
 			_Mode = mode;
 		}
-		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (relativeSource) {
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMUpdateSourceTrigger updateSourceTrigger) : this (relativeSource) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger)
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger)
 		: this (relativeSource, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
@@ -162,10 +163,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingMode mode) : this (relativeSource, path) {
 			_Mode = mode;
 		}
-		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (relativeSource, path) {
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMUpdateSourceTrigger updateSourceTrigger) : this (relativeSource, path) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger)
+		public MVVMBinding (MVVMBindingRelativeSource relativeSource, string path, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger)
 		: this (relativeSource, path, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
@@ -177,10 +178,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (string elementName, string path, MVVMBindingMode mode) : this (elementName, path) {
 			_Mode = mode;
 		}
-		public MVVMBinding (string elementName, string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (elementName, path) {
+		public MVVMBinding (string elementName, string path, MVVMUpdateSourceTrigger updateSourceTrigger) : this (elementName, path) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (string elementName, string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (elementName, path, mode) {
+		public MVVMBinding (string elementName, string path, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (elementName, path, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (MVVMControl element) {
@@ -190,10 +191,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (MVVMControl element, MVVMBindingMode mode) : this (element) {
 			_Mode = mode;
 		}
-		public MVVMBinding (MVVMControl element, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (element) {
+		public MVVMBinding (MVVMControl element, MVVMUpdateSourceTrigger updateSourceTrigger) : this (element) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (MVVMControl element, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (element, mode) {
+		public MVVMBinding (MVVMControl element, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (element, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (MVVMControl element, string path) : this (element) {
@@ -202,10 +203,10 @@ namespace Eruru.MVVM {
 		public MVVMBinding (MVVMControl element, string path, MVVMBindingMode mode) : this (element, path) {
 			_Mode = mode;
 		}
-		public MVVMBinding (MVVMControl element, string path, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (element, path) {
+		public MVVMBinding (MVVMControl element, string path, MVVMUpdateSourceTrigger updateSourceTrigger) : this (element, path) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
-		public MVVMBinding (MVVMControl element, string path, MVVMBindingMode mode, MVVMBindingUpdateSourceTrigger updateSourceTrigger) : this (element, path, mode) {
+		public MVVMBinding (MVVMControl element, string path, MVVMBindingMode mode, MVVMUpdateSourceTrigger updateSourceTrigger) : this (element, path, mode) {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 
@@ -252,6 +253,9 @@ namespace Eruru.MVVM {
 			return new MVVMBinding ((object)value);
 		}
 		public static implicit operator MVVMBinding (DateTime value) {
+			return new MVVMBinding (value);
+		}
+		public static implicit operator MVVMBinding (MVVMDataTemplate value) {
 			return new MVVMBinding (value);
 		}
 
@@ -331,12 +335,13 @@ namespace Eruru.MVVM {
 			SetTargetValue (GetSourceValue ());
 		}
 
-		internal void Debind () {
+		internal void Unbind () {
 			_SourcePropertyName = null;
 			foreach (var notifyPropertyChanged in NotifyPropertyChangeds) {
 				notifyPropertyChanged.Key.PropertyChanged -= NotifyPropertyChanged_PropertyChanged;
 			}
 			NotifyPropertyChangeds.Clear ();
+			OnUnbind?.Invoke ();
 			IsFirstBind = true;
 		}
 
@@ -351,7 +356,7 @@ namespace Eruru.MVVM {
 				}
 			}
 			IsFirstBind = false;
-			Debind ();
+			Unbind ();
 			switch (Type) {
 				case MVVMBindingType.Value:
 					break;
@@ -369,9 +374,9 @@ namespace Eruru.MVVM {
 				case MVVMBindingType.Relative: {
 					MVVMControl control = Control;
 					switch (RelativeSource.Mode) {
-						case MVVMBindingRelativeSourceMode.Self:
+						case MVVMRelativeSourceMode.Self:
 							break;
-						case MVVMBindingRelativeSourceMode.FindAncestor:
+						case MVVMRelativeSourceMode.FindAncestor:
 							int ancestorCount = 0;
 							while (control != null) {
 								if (RelativeSource.AncestorType == null || RelativeSource.AncestorType.IsInstanceOfType (control)) {
@@ -399,8 +404,8 @@ namespace Eruru.MVVM {
 			return Mode == MVVMBindingMode.Default ? DefaultMode : Mode;
 		}
 
-		internal MVVMBindingUpdateSourceTrigger GetUpdateSourceTrigger () {
-			return UpdateSourceTrigger == MVVMBindingUpdateSourceTrigger.Default ? DefaultUpdateSourceTrigger : UpdateSourceTrigger;
+		internal MVVMUpdateSourceTrigger GetUpdateSourceTrigger () {
+			return UpdateSourceTrigger == MVVMUpdateSourceTrigger.Default ? DefaultUpdateSourceTrigger : UpdateSourceTrigger;
 		}
 
 		internal void OneWaySetSourceValue () {
@@ -424,7 +429,7 @@ namespace Eruru.MVVM {
 				for (int i = 0; i < pathNodes.Length; i++) {
 					PropertyInfo propertyInfo = type.GetProperty (pathNodes[i]);
 					if (propertyInfo == null) {
-						throw new Exception (string.Format ("绑定{0}失败，{1}下没有公开的可读写属性{2}", string.Join (".", pathNodes, 0, i + 1), instance, pathNodes[i]));
+						Console.Error.WriteLine (string.Format ("绑定{0}失败，{1}下没有公开的可读写属性{2}", string.Join (".", pathNodes, 0, i + 1), instance, pathNodes[i]));
 					}
 					if (instance is INotifyPropertyChanged) {
 						INotifyPropertyChanged notifyPropertyChanged = (INotifyPropertyChanged)instance;
@@ -434,7 +439,9 @@ namespace Eruru.MVVM {
 					if (i == pathNodes.Length - 1) {
 						Instance = instance;
 						PropertyInfo = propertyInfo;
-						_SourcePropertyName = pathNodes[i];
+						if (propertyInfo != null) {
+							_SourcePropertyName = pathNodes[i];
+						}
 						break;
 					}
 					instance = propertyInfo.GetValue (instance, null);

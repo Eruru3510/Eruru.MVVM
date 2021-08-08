@@ -6,43 +6,43 @@ namespace WindowsFormsApp1 {
 
 	public partial class FormAdd : Form {
 
-		public FormAdd () {
+		Item Item;
+
+		public FormAdd (Item item = null) {
 			InitializeComponent ();
-			MVVMControl control = new MVVMControl (this) {
-				DataContext = new MVVMBinding (new FormAddViewModel ())
-			}.Add (
-				new MVVMControl (this) {
-					DataContext = new MVVMBinding ("Model")
-				}.Add (
-					new MVVMLabel (Label) {
-						Text = new MVVMBinding ("TextBox", "Text")
-					},
-					new MVVMTextBox (TextBox) {
-						Name = "TextBox",
-						Text = new MVVMBinding ("Text")
-					},
-					new MVVMComboBox (ComboBox) {
-						ItemsSource = new MVVMBinding ("Names"),
-						SelectedIndex = new MVVMBinding ("TextBox", "Text")
-					},
-					new MVVMItemsControl (FlowLayoutPanel) {
-						ItemsSource = new MVVMBinding ("Names"),
-					}
-				),
-				new MVVMButton (button1) {
-					Click = new MVVMBinding ("OnAdd")
-				},
-				new MVVMButton (ButtonConfirm) {
-					Click = new MVVMBinding ("OnConfirm"),
-					ClickParameter = new MVVMBinding ()
-				},
-				new MVVMButton (ButtonCancel) {
-					Click = new MVVMBinding ("OnCancel")
-				}
-			).Build ();
-			ButtonCancel.Click += (sender, e) => {
-				control.DataContext.SetTargetValue (new FormAddViewModel ());
+			Item = item ?? new Item ();
+			ButtonConfirm.Click += (sender, e) => {
+				DialogResult = DialogResult.OK;
+				Close ();
 			};
+			ButtonCancel.Click += (sender, e) => {
+				DialogResult = DialogResult.Cancel;
+				Close ();
+			};
+		}
+
+		public MVVMControl Build () {
+			return new MVVMControl (this) {
+				DataContext = new MVVMBinding (new FormAddViewModel () { Item = Item })
+			}.Add (
+			   new MVVMControl (this) {
+				   DataContext = new MVVMBinding ("Item")
+			   }.Add (
+				   new MVVMTextBox (TextBoxName) {
+					   Text = new MVVMBinding ("Name")
+				   },
+				   new MVVMTextBox (TextBoxAge) {
+					   Text = new MVVMBinding ("Age")
+				   },
+				   new MVVMComboBox (ComboBoxSchool) {
+					   ItemsSource = new MVVMBinding (new MVVMBindingRelativeSource (3), "DataContext.Schools"),
+					   Text = new MVVMBinding ("School")
+				   },
+				   new MVVMTextBox (TextBoxRemark) {
+					   Text = new MVVMBinding ("Remark")
+				   }
+			   )
+		   ).Build ();
 		}
 
 	}

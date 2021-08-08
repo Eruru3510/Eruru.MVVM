@@ -62,7 +62,7 @@ public class View {
 		for (int i = 0; i < viewModel.getItems ().size (); i++) {
 			JLabel label = (JLabel) ((JPanel) itemsControl.getControl ().getComponent (i)).getComponent (0);
 			MVVMLabel mvvmLabel = (MVVMLabel) itemsControl.get (i).get (0);
-			int model = viewModel.getItems ().get (i).getId ();
+			int model = viewModel.getItems ().get (i).id;
 			if (Integer.parseInt (label.getText ()) != model) {
 				isValid = false;
 			}

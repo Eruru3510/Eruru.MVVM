@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<script src="eruru.mvvm.js"></script>
+	</head>
+	<body>
+		<input type="text" mvvmvalue="{onSummary parameter=0}"/>
+		<select mvvmvalue="{onSummary parameter=1}">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+		</select>
+		{summary}
+		<script>
+			mvvm.build ({
+				summary: "选择",
+				onSummary: new MVVMFunction (function (text, selectedValue) {
+					this.summary = text + " " + selectedValue;
+				}, "默认值", "A")
+			});
+		</script>
+	</body>
+</html>

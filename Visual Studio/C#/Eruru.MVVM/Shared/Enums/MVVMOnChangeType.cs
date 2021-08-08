@@ -1,6 +1,6 @@
 ﻿namespace Eruru.MVVM {
 
-	public enum MVVMBindingOnChangedType {
+	public enum MVVMOnChangedType {
 
 		PropertyChanged,
 		LostFocus

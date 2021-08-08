@@ -1,5 +1,7 @@
 package com.eruru.mvvm;
 
+import com.eruru.mvvm.swing.MVVMItemsControl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,10 @@ public abstract class MVVMControlBase implements MVVMNotifyPropertyChanged {
 		dataContext = setBinding (binding, true, targetValue -> {
 			for (MVVMBinding item : bindings) {
 				item.bind ();
+			}
+			if (this instanceof MVVMItemsControl) {
+				System.out.printf ("%s 是 ItemsControl 不需要重绑\n", this.getClass ().getSuperclass ());
+				return;
 			}
 			for (MVVMControlBase control : controls) {
 				control.getDataContext ().bind ();
@@ -183,7 +189,7 @@ public abstract class MVVMControlBase implements MVVMNotifyPropertyChanged {
 		binding.onDebind = debind;
 		binding.onGetTargetValue = getTargetValue;
 		binding.onSetTargetValue = setTargetValue;
-		binding.defaultMode = hasOnChanged ? MVVMBindingMode.TwoWay : MVVMBindingMode.OneWay;
+		binding.defaultMode = hasOnChanged ? MVVMBindingMode.twoWay : MVVMBindingMode.oneWay;
 		binding.defaultUpdateSourceTrigger = hasLostFocus ? MVVMBindingUpdateSourceTrigger.LostFocus : MVVMBindingUpdateSourceTrigger.PropertyChanged;
 		if (!isDataContext) {
 			bindings.add (binding);
@@ -208,7 +214,7 @@ public abstract class MVVMControlBase implements MVVMNotifyPropertyChanged {
 	}
 
 	protected MVVMBinding setBinding (MVVMBinding binding, MVVMAction1<Object> setTargetValue, MVVMAction debind) {
-		return setBinding (binding, null, setTargetValue, null, false, false, false, MVVMAPI.getCallerMemberName ());
+		return setBinding (binding, null, setTargetValue, debind, false, false, false, MVVMAPI.getCallerMemberName ());
 	}
 
 	protected MVVMBinding setBinding (MVVMBinding binding) {
@@ -220,8 +226,8 @@ public abstract class MVVMControlBase implements MVVMNotifyPropertyChanged {
 			return;
 		}
 		switch (binding.getMode ()) {
-			case TwoWay:
-			case OneWayToSource:
+			case twoWay:
+			case oneWayToSource:
 				switch (binding.getUpdateSourceTrigger ()) {
 					case PropertyChanged:
 						if (onChangedType == MVVMBindingOnChangedType.PropertyChanged) {

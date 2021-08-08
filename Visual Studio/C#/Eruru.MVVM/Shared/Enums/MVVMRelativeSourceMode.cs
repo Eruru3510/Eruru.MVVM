@@ -1,6 +1,6 @@
 ﻿namespace Eruru.MVVM {
 
-	public enum MVVMBindingRelativeSourceMode {
+	public enum MVVMRelativeSourceMode {
 
 		PreviousData,
 		TemplatedParent,

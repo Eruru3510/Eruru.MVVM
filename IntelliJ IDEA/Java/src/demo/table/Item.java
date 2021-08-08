@@ -2,7 +2,8 @@ package demo.table;
 
 public class Item {
 
-	private int id;
+	int id;
+	
 	private String name;
 
 	public Item (int id, String name) {
@@ -11,6 +12,7 @@ public class Item {
 	}
 
 	public int getId () {
+		System.out.printf ("get id %s\n", id);
 		return id;
 	}
 

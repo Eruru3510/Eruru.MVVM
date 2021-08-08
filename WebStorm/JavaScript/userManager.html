@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>列表增删改查</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+		<script src="eruru.mvvm.js"></script>
+		<style>
+			table thead tr th {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="padding:20px;" id="app">
+			<div class="panel panel-primary">
+				<div class="panel-heading">用户管理</div>
+				<table class="table table-bordered table-striped text-center">
+					<thead>
+						<tr mvvmitemssource="{headers}">
+							<th mvvmitemtemplate>{}</th>
+						</tr>
+					</thead>
+					<tbody mvvmitemssource="{items}">
+						<tr mvvmitemtemplate>
+							<td>{name}</td>
+							<td>{age}</td>
+							<td>{school}</td>
+							<td>{remark}</td>
+							<td>
+								<a href="#" mvvmonclick="{dataContext.onEdit relativeSource=tbody}" mvvmonclickparameter="{}">编辑</a>
+								&nbsp;&nbsp;<a href="#" mvvmonclick="{dataContext.onDelete relativeSource=tbody}" mvvmonclickparameter="{}">删除</a>
+							</td>
+						</tr>
+						<tr mvvmdatacontext="{tempItem}">
+							<td><input type="text" class="form-control" mvvmvalue="{name}"/></td>
+							<td><input type="text" class="form-control" mvvmvalue="{age}"/></td>
+							<td><select class="form-control" mvvmvalue="{school}">
+								<option>中山小学</option>
+								<option>复兴中学</option>
+								<option>光明小学</option>
+							</select></td>
+							<td><input type="text" class="form-control" mvvmvalue="{remark}"/></td>
+							<td>
+								<button type="button" class="btn btn-primary" mvvmonclick="{dataContext.onSave relativeSource=tbody}">保存</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script>
+			var viewModel;
+			mvvm.build (viewModel = {
+				headers: [ "用户名", "年龄", "毕业学校", "备注", "操作" ],
+				items: [
+					{ Id: 1, name: '小明', age: 18, school: '光明小学', remark: '三好学生' },
+					{ Id: 2, name: '小刚', age: 20, school: '复兴中学', remark: '优秀班干部' },
+					{ Id: 3, name: '吉姆格林', age: 19, school: '光明小学', remark: '吉姆做了汽车公司经理' },
+					{ Id: 4, name: '李雷', age: 25, school: '复兴中学', remark: '不老实的家伙' },
+					{ Id: 5, name: '韩梅梅', age: 22, school: '光明小学', remark: '在一起' }
+				],
+				tempItem: null,
+				onEdit: function (value) {
+					this.items.set (this.items.indexOf (value), this.cloneTempItem ());
+					//this.clearTempItem ();
+				},
+				onDelete: function (value) {
+					this.items.remove (value);
+				},
+				onSave: function () {
+					this.items.add (this.cloneTempItem ());
+					//this.clearTempItem ();
+				},
+				cloneTempItem: function () {
+					return {
+						id: this.tempItem.id,
+						name: this.tempItem.name,
+						age: this.tempItem.age,
+						school: this.tempItem.school,
+						remark: this.tempItem.remark
+					}
+				},
+				clearTempItem: function () {
+					this.tempItem = { id: null, name: null, age: null, school: null, remark: null };
+				}
+			});
+			viewModel.clearTempItem ();
+		</script>
+	</body>
+</html>

@@ -14,14 +14,10 @@ namespace Eruru.MVVM {
 
 			set {
 				SetBinding (ref _ItemsSource, value, setTargetValue: targetValue => {
-					if (NotifyCollectionChanged != null) {
-						NotifyCollectionChanged.CollectionChanged -= MVVMItemsControlBase_CollectionChanged;
-					}
+					CancelCollectionChanged ();
 					Reset ();
 					if (targetValue is IEnumerable) {
-						foreach (object item in (IEnumerable)targetValue) {
-							Add (item);
-						}
+						AddRange ((IEnumerable)targetValue);
 					}
 					NotifyCollectionChanged = targetValue as IMVVMNotifyCollectionChanged;
 					if (NotifyCollectionChanged != null) {
@@ -63,10 +59,10 @@ namespace Eruru.MVVM {
 		void MVVMItemsControlBase_CollectionChanged (object sender, MVVMNotifyCollectionChangedEventArgs e) {
 			switch (e.Action) {
 				case MVVMNotifyCollectionChangedAction.Add:
-					Add (e.NewItems[0]);
+					Insert (e.NewStartingIndex, e.NewItems[0]);
 					break;
 				case MVVMNotifyCollectionChangedAction.Remove:
-					Remove (e.OldStartingIndex);
+					RemoveAt (e.OldStartingIndex);
 					break;
 				case MVVMNotifyCollectionChangedAction.Replace:
 					Replace (e.OldStartingIndex, e.NewItems[0]);
@@ -79,6 +75,13 @@ namespace Eruru.MVVM {
 					break;
 				default:
 					throw new NotImplementedException (e.Action.ToString ());
+			}
+		}
+
+		void CancelCollectionChanged () {
+			if (NotifyCollectionChanged != null) {
+				NotifyCollectionChanged.CollectionChanged -= MVVMItemsControlBase_CollectionChanged;
+				NotifyCollectionChanged = null;
 			}
 		}
 

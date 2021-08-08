@@ -13,7 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Value, value, () => Control.Value, targetValue => Control.Value = MVVMAPI.To<int> (targetValue), true);
+				SetBinding (ref _Value, value, () => Control.Value, targetValue => Control.Value = MVVMAPI.To<int> (targetValue), null, MVVMBindingMode.TwoWay);
 			}
 
 		}
@@ -47,10 +47,15 @@ namespace Eruru.MVVM {
 		public MVVMTrackBar (TrackBar control) : base (control) {
 			Control = control;
 			Control.ValueChanged += Control_ValueChanged;
+			Control.LostFocus += Control_LostFocus;
 		}
 
 		private void Control_ValueChanged (object sender, EventArgs e) {
 			OnChanged (_Value);
+		}
+
+		private void Control_LostFocus (object sender, EventArgs e) {
+			OnChanged (_Value, MVVMOnChangedType.LostFocus);
 		}
 
 	}

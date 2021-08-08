@@ -13,7 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue), true, true);
+				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue), null, MVVMBindingMode.TwoWay);
 			}
 
 		}
@@ -24,7 +24,11 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _SelectedIndex, value, () => Control.SelectedIndex, targetValue => Control.SelectedIndex = MVVMAPI.To<int> (targetValue), true);
+				SetBinding (
+					ref _SelectedIndex, value,
+					() => Control.SelectedIndex, targetValue => Control.SelectedIndex = MVVMAPI.To<int> (targetValue),
+					null, MVVMBindingMode.TwoWay
+				);
 			}
 
 		}
@@ -59,7 +63,7 @@ namespace Eruru.MVVM {
 			Control.Items.Add (value);
 		}
 
-		protected override void Remove (int index) {
+		protected override void RemoveAt (int index) {
 			Control.Items.RemoveAt (index);
 		}
 
@@ -82,7 +86,7 @@ namespace Eruru.MVVM {
 		}
 
 		private void Control_LostFocus (object sender, EventArgs e) {
-			OnChanged (_Text, MVVMBindingOnChangedType.LostFocus);
+			OnChanged (_Text, MVVMOnChangedType.LostFocus);
 		}
 
 		private void Control_SelectedIndexChanged (object sender, EventArgs e) {

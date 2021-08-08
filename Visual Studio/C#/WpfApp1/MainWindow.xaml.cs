@@ -24,12 +24,24 @@ namespace WpfApp1 {
 		}
 		class ViewModel {
 
-			public string[] Items { get; set; } = {
-				"A",
-				"B",
-				"C"
-			};
+			public string[] Items { get; set; } = { "A", "B", "C" };
+			public string Text {
 
+				get => _Text;
+
+				set {
+					_Text = value;
+					Console.WriteLine ("Set");
+				}
+
+			}
+
+			string _Text;
+
+		}
+
+		private void Button_Click (object sender, RoutedEventArgs e) {
+			Slider.Content = DateTime.Now;
 		}
 	}
 }

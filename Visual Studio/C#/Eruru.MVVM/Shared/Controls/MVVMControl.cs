@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Eruru.MVVM {
 
-	public partial class MVVMControl : INotifyPropertyChanged, IEnumerable<MVVMControl>, IEnumerable {
+	public partial class MVVMControl : INotifyPropertyChanged, IEnumerable<MVVMControl> {
 
 		public MVVMBinding Name {
 
@@ -63,7 +63,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				Controls[index].Debind ();
+				Controls[index].Unbind ();
 				Controls[index] = value;
 			}
 
@@ -71,6 +71,7 @@ namespace Eruru.MVVM {
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		internal Dictionary<string, MVVMControl> ControlNames = new Dictionary<string, MVVMControl> ();
+		internal MVVMControl _Parent;
 
 		readonly List<MVVMBinding> Bindings = new List<MVVMBinding> ();
 		readonly List<MVVMControl> _Controls = new List<MVVMControl> ();
@@ -79,7 +80,6 @@ namespace Eruru.MVVM {
 		MVVMBinding _Name;
 		MVVMBinding _DataContext;
 		MVVMControl _Root;
-		MVVMControl _Parent;
 
 		public MVVMControl Add (MVVMControl control) {
 			control._Parent = this;
@@ -99,7 +99,7 @@ namespace Eruru.MVVM {
 		}
 
 		public void RemoveAt (int index) {
-			Controls[index].Debind ();
+			Controls[index].Unbind ();
 			Controls.RemoveAt (index);
 		}
 
@@ -117,7 +117,7 @@ namespace Eruru.MVVM {
 
 		public void Clear () {
 			foreach (MVVMControl control in Controls) {
-				control.Debind ();
+				control.Unbind ();
 			}
 			Controls.Clear ();
 		}
@@ -132,11 +132,11 @@ namespace Eruru.MVVM {
 			return this;
 		}
 
-		public void Debind () {
+		public void Unbind () {
 			ForEach (control => {
-				control.DataContext.Debind ();
+				control.DataContext.Unbind ();
 				foreach (MVVMBinding binding in control.Bindings) {
-					binding.Debind ();
+					binding.Unbind ();
 				}
 			});
 		}
@@ -165,7 +165,9 @@ namespace Eruru.MVVM {
 		protected void SetBinding (
 			ref MVVMBinding binding, MVVMBinding value,
 			MVVMFunc<object> getTargetValue = null, Action<object> setTargetValue = null,
-			bool hasOnChanged = false, bool hasLostFocus = false,
+			MVVMAction unbind = null,
+			MVVMBindingMode defaultMode = MVVMBindingMode.OneWay,
+			MVVMUpdateSourceTrigger defaultUpdateSourceTrigger = MVVMUpdateSourceTrigger.PropertyChanged,
 			bool isDataContext = false, [CallerMemberName] string propertyName = null
 		) {
 			if (!isDataContext && binding != null) {
@@ -184,15 +186,16 @@ namespace Eruru.MVVM {
 			binding._IsDataContext = isDataContext;
 			binding.OnGetTargetValue = getTargetValue;
 			binding.OnSetTargetValue = setTargetValue;
-			binding.DefaultMode = hasOnChanged ? MVVMBindingMode.TwoWay : MVVMBindingMode.OneWay;
-			binding.DefaultUpdateSourceTrigger = hasLostFocus ? MVVMBindingUpdateSourceTrigger.LostFocus : MVVMBindingUpdateSourceTrigger.PropertyChanged;
+			binding.OnUnbind = unbind;
+			binding.DefaultMode = defaultMode;
+			binding.DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
 			if (!isDataContext) {
 				Bindings.Add (binding);
 				OnDataContextChanged += binding.Bind;
 			}
 		}
 
-		internal protected void OnChanged (MVVMBinding binding, MVVMBindingOnChangedType onChangedType = MVVMBindingOnChangedType.PropertyChanged) {
+		internal protected void OnChanged (MVVMBinding binding, MVVMOnChangedType onChangedType = MVVMOnChangedType.PropertyChanged) {
 			if (binding == null || binding.BlockOnChanged) {
 				return;
 			}
@@ -200,13 +203,13 @@ namespace Eruru.MVVM {
 				case MVVMBindingMode.TwoWay:
 				case MVVMBindingMode.OneWayToSource:
 					switch (binding.GetUpdateSourceTrigger ()) {
-						case MVVMBindingUpdateSourceTrigger.PropertyChanged:
-							if (onChangedType == MVVMBindingOnChangedType.PropertyChanged) {
+						case MVVMUpdateSourceTrigger.PropertyChanged:
+							if (onChangedType == MVVMOnChangedType.PropertyChanged) {
 								binding.OneWaySetSourceValue ();
 							}
 							break;
-						case MVVMBindingUpdateSourceTrigger.LostFocus:
-							if (onChangedType == MVVMBindingOnChangedType.LostFocus) {
+						case MVVMUpdateSourceTrigger.LostFocus:
+							if (onChangedType == MVVMOnChangedType.LostFocus) {
 								binding.OneWaySetSourceValue ();
 							}
 							break;

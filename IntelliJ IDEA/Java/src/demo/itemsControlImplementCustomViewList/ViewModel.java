@@ -7,7 +7,13 @@ public class ViewModel {
 
 	private int id;
 	private Item tempItem;
-	private MVVMObservableCollection<Item> items = new MVVMObservableCollection<> ();
+	private MVVMObservableCollection<Item> items = new MVVMObservableCollection<Item> () {{
+
+		add (new Item (0));
+		add (new Item (0));
+		add (new Item (0));
+
+	}};
 	private MVVMRelayCommand onAdd = new MVVMRelayCommand (value -> {
 		items.add (newItem ());
 	});

@@ -1,48 +1,74 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Eruru.MVVM {
 
 	public partial class MVVMItemsControl : MVVMControl {
 
+		List<MVVMControl> Items = new List<MVVMControl> ();
+
 		public MVVMItemsControl (Control control) : base (control) {
 
 		}
 
-		MVVMControl Register (object value, int index) {
+		MVVMControl Register (int index, object value) {
 			MVVMControl control = (MVVMControl)Convert (value);
-			base.Add (control, index);
+			control._Parent = this;
 			control.DataContext = new MVVMBinding (value);
 			control.Build (Root);
+			Items.Insert (index, control);
 			Control.Controls.Add (control.Control);
 			Control.Controls.SetChildIndex (control.Control, index);
 			return control;
 		}
 
-		protected virtual void Add (object value, int index) {
-			Register (value, index);
+		protected virtual void Insert (int index, object value) {
+			Register (index, value);
+		}
+
+		protected virtual void InsertRange (int index, IEnumerable collection) {
+			int i = index;
+			foreach (object value in collection) {
+				Insert (i, value);
+				i++;
+			}
 		}
 
 		protected virtual void Add (object value) {
-			Add (value, Controls.Count);
+			Insert (Items.Count, value);
 		}
 
-		protected virtual void Remove (int index) {
-			RemoveAt (index);
+		protected virtual void AddRange (IEnumerable collection) {
+			foreach (object value in collection) {
+				Add (value);
+			}
+		}
+
+		protected new virtual void RemoveAt (int index) {
+			Items[index].Unbind ();
+			Items.RemoveAt (index);
 			Control.Controls.RemoveAt (index);
 		}
 
 		protected virtual void Replace (int index, object value) {
-			Remove (index);
-			Add (value, index);
+			RemoveAt (index);
+			Insert (index, value);
 		}
 
 		protected new virtual void Move (int oldIndex, int newIndex) {
-			base.Move (oldIndex, newIndex);
+			MVVMControl control = Items[oldIndex];
+			Items.RemoveAt (oldIndex);
+			Items.Insert (newIndex, control);
 			Control.Controls.SetChildIndex (Control.Controls[oldIndex], newIndex);
 		}
 
 		protected virtual void Reset () {
-			Clear ();
+			foreach (MVVMControl control in Items) {
+				control.Unbind ();
+			}
+			Items.Clear ();
 			Control.Controls.Clear ();
 		}
 

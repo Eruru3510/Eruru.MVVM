@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<script src="eruru.mvvm.js"></script>
+	</head>
+	<body>
+		<input type="button" value="添加" mvvmonclick="{onAdd}"/>
+		<input type="button" value="清空" mvvmonclick="{onClear}"/>
+		<table id="table" mvvmitemssource="{items}" border="1" cellspacing="0" width="300px">
+			<tr align="center">
+				<td>ID</td>
+				<td>名称</td>
+			</tr>
+			<tr mvvmitemtemplate align="center">
+				<td>{id}</td>
+				<td>{name}</td>
+			</tr>
+		</table>
+		<script>
+			mvvm.build ({
+				items: new MVVMObservableCollection ([
+					{ id: 0, name: "物品1" },
+					{ id: 1, name: "物品2" },
+					{ id: 2, name: "物品3" }
+				]),
+				onAdd: function () {
+					this.items.add ({ id: 3, name: "物品4" });
+				},
+				onClear: function () {
+					this.items.clear ();
+				}
+			});
+		</script>
+	</body>
+</html>

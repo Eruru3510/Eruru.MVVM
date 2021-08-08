@@ -17,7 +17,7 @@ public class ViewModel implements MVVMNotifyPropertyChanged {
 		add (new Item (2, "书3"));
 	}};
 	private MVVMRelayCommand onAdd = new MVVMRelayCommand (value -> {
-		if (items.stream ().anyMatch (item -> item.getId () == id)) {
+		if (items.stream ().anyMatch (item -> item.id == id)) {
 			JOptionPane.showMessageDialog (null, String.format ("添加失败，ID：%d 的项已存在", id));
 			setId (id + 1);
 			return;

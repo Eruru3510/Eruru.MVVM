@@ -10,6 +10,10 @@ namespace WindowsFormsApp1 {
 			new MVVMControl (this) {
 				DataContext = new MVVMBinding (new Form1ViewModel ())
 			}.Add (
+				new MVVMItemsControl (FlowLayoutPanel) {
+					ItemsSource = new MVVMBinding ("Items"),
+					ItemTemplate = new MVVMDataTemplate (() => new UserControlForm1Item ().Build ())
+				},
 				new MVVMButton (ButtonAdd) {
 					Click = new MVVMBinding ("OnAdd")
 				}

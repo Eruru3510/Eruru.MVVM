@@ -2,13 +2,14 @@ package demo.itemsControlImplementCustomViewList;
 
 public class Item {
 
-	private int id;
+	int id;
 
 	public Item (int id) {
 		this.id = id;
 	}
 
 	public int getId () {
+		System.out.println ("get id: " + id);
 		return id;
 	}
 

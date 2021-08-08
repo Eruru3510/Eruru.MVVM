@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4fa2dea3-216f-4683-ad11-1f71c118318d" name="默认变更列表" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="未命名" pattern="file[JavaScript]:eruru.mvvm/*" />
+  </component>
+  <component name="ProjectId" id="1vqqx2jSPzE07reYb8icZ83Xc2j" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/compile.cmd" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Eruru\Projects\GitHub\Eruru.MVVM\WebStorm\JavaScript\eruru.mvvm" />
+      <recent name="D:\Eruru\Projects\GitHub\Eruru.MVVM\WebStorm\JavaScript" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript 调试.bindMethod.html">
+    <configuration name="导航菜单.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/JavaScript/导航菜单.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="bindMethod.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/JavaScript/bindMethod.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="table.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/JavaScript/table.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="textBox.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/JavaScript/textBox.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="userManager.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/JavaScript/userManager.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript 调试.bindMethod.html" />
+        <item itemvalue="JavaScript 调试.table.html" />
+        <item itemvalue="JavaScript 调试.textBox.html" />
+        <item itemvalue="JavaScript 调试.userManager.html" />
+        <item itemvalue="JavaScript 调试.导航菜单.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="4fa2dea3-216f-4683-ad11-1f71c118318d" name="默认变更列表" comment="" />
+      <created>1627300210026</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1627300210026</updated>
+      <workItem from="1627300211176" duration="1537000" />
+      <workItem from="1627353208208" duration="715000" />
+      <workItem from="1627366518733" duration="19879000" />
+      <workItem from="1627387345020" duration="2903000" />
+      <workItem from="1627397601689" duration="7487000" />
+      <workItem from="1627434243129" duration="34354000" />
+      <workItem from="1627469948861" duration="567000" />
+      <workItem from="1627472887175" duration="16123000" />
+      <workItem from="1627489800720" duration="12398000" />
+      <workItem from="1627504832607" duration="1656000" />
+      <workItem from="1627530265343" duration="3400000" />
+      <workItem from="1627533894524" duration="3230000" />
+      <workItem from="1627630723306" duration="3019000" />
+      <workItem from="1627702736502" duration="14457000" />
+      <workItem from="1627832354741" duration="964000" />
+      <workItem from="1627880953812" duration="10954000" />
+      <workItem from="1627900879360" duration="1447000" />
+      <workItem from="1627911612694" duration="467000" />
+      <workItem from="1627973474795" duration="1200000" />
+      <workItem from="1627974835044" duration="594000" />
+      <workItem from="1627986751079" duration="1236000" />
+      <workItem from="1628077168654" duration="599000" />
+      <workItem from="1628261745883" duration="442000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
