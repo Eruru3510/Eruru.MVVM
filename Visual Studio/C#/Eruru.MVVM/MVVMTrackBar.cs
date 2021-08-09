@@ -13,7 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Value, value, () => Control.Value, targetValue => Control.Value = MVVMAPI.To<int> (targetValue), null, MVVMBindingMode.TwoWay);
+				SetBinding (ref _Value, value, () => Control.Value, targetValue => Control.Value = MVVMAPI.To<int> (targetValue), defaultMode: MVVMBindingMode.TwoWay);
 			}
 
 		}

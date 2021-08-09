@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WindowsFormsApp1 {
+﻿namespace WindowsFormsApp1 {
 
 	public class Item {
 
@@ -19,6 +15,10 @@ namespace WindowsFormsApp1 {
 			Age = age;
 			School = school;
 			Remark = remark;
+		}
+
+		public Item Clone () {
+			return new Item (Name, Age, School, Remark);
 		}
 
 	}

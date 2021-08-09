@@ -1,12 +1,11 @@
 ﻿using Eruru.MVVM;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1 {
 
 	public partial class FormAdd : Form {
 
-		Item Item;
+		readonly Item Item;
 
 		public FormAdd (Item item = null) {
 			InitializeComponent ();

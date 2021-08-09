@@ -13,7 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue), null, MVVMBindingMode.TwoWay);
+				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue), defaultMode: MVVMBindingMode.TwoWay);
 			}
 
 		}
@@ -24,10 +24,8 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (
-					ref _SelectedIndex, value,
-					() => Control.SelectedIndex, targetValue => Control.SelectedIndex = MVVMAPI.To<int> (targetValue),
-					null, MVVMBindingMode.TwoWay
+				SetBinding (ref _SelectedIndex, value, () => Control.SelectedIndex, targetValue => Control.SelectedIndex = MVVMAPI.To<int> (targetValue),
+					defaultMode: MVVMBindingMode.TwoWay
 				);
 			}
 
@@ -39,7 +37,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _SelectedItem, value, () => Control.SelectedItem, targetValue => Control.SelectedItem = MVVMAPI.To<int> (targetValue));
+				SetBinding (ref _SelectedItem, value, () => Control.SelectedItem, targetValue => Control.SelectedItem = targetValue);
 			}
 
 		}
@@ -57,6 +55,10 @@ namespace Eruru.MVVM {
 
 		protected override object Convert (object value) {
 			return value;
+		}
+
+		protected override void Insert (int index, object value) {
+			Control.Items.Insert (index, value);
 		}
 
 		protected override void Add (object value) {

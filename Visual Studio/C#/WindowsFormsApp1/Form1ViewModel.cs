@@ -1,6 +1,4 @@
 ﻿using Eruru.MVVM;
-using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1 {
@@ -28,7 +26,7 @@ namespace WindowsFormsApp1 {
 			});
 			OnEdit = new MVVMRelayCommand (value => {
 				Item item = (Item)value;
-				FormAdd formAdd = new FormAdd (item);
+				FormAdd formAdd = new FormAdd (item.Clone ());
 				MVVMControl control = formAdd.Build ();
 				if (formAdd.ShowDialog () == DialogResult.OK) {
 					Items[Items.IndexOf (item)] = control.DataContext.GetTargetValue<FormAddViewModel> ().Item;

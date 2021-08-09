@@ -13,10 +13,8 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (
-					ref _Text, value,
-					() => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue),
-					null, MVVMBindingMode.TwoWay, MVVMUpdateSourceTrigger.LostFocus
+				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue),
+					defaultMode: MVVMBindingMode.TwoWay, defaultUpdateSourceTrigger: MVVMUpdateSourceTrigger.LostFocus
 				);
 			}
 
