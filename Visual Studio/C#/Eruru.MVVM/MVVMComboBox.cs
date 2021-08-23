@@ -5,18 +5,7 @@ namespace Eruru.MVVM {
 
 	public class MVVMComboBox : MVVMItemsControl {
 
-		public new ComboBox Control { get; }
-		public MVVMBinding Text {
-
-			get {
-				return GetBinding (ref _Text, binding => Text = binding);
-			}
-
-			set {
-				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue), defaultMode: MVVMBindingMode.TwoWay);
-			}
-
-		}
+		public ComboBox ComboBox { get; }
 		public MVVMBinding SelectedIndex {
 
 			get {
@@ -24,9 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _SelectedIndex, value, () => Control.SelectedIndex, targetValue => Control.SelectedIndex = MVVMAPI.To<int> (targetValue),
-					defaultMode: MVVMBindingMode.TwoWay
-				);
+				SetBinding (ref _SelectedIndex, value, () => ComboBox.SelectedIndex, targetValue => ComboBox.SelectedIndex = MVVMAPI.To<int> (targetValue), true);
 			}
 
 		}
@@ -37,20 +24,22 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _SelectedItem, value, () => Control.SelectedItem, targetValue => Control.SelectedItem = targetValue);
+				SetBinding (ref _SelectedItem, value, () => ComboBox.SelectedItem, targetValue => ComboBox.SelectedItem = targetValue);
 			}
 
 		}
 
-		MVVMBinding _Text;
 		MVVMBinding _SelectedIndex;
 		MVVMBinding _SelectedItem;
 
-		public MVVMComboBox (ComboBox control) : base (control) {
-			Control = control;
-			Control.TextChanged += Control_TextChanged;
-			control.LostFocus += Control_LostFocus;
-			Control.SelectedIndexChanged += Control_SelectedIndexChanged;
+		public MVVMComboBox (ComboBox comboBox) : base (comboBox) {
+			ComboBox = comboBox;
+			ComboBox.SelectedIndexChanged += (sender, e) => OnChanged (_SelectedIndex);
+		}
+
+		protected override void OnSetText (MVVMBinding text) {
+			text.DefaultMode = MVVMBindingMode.TwoWay;
+			text.DefaultUpdateSourceTrigger = MVVMUpdateSourceTrigger.PropertyChanged;
 		}
 
 		protected override object Convert (object value) {
@@ -58,41 +47,29 @@ namespace Eruru.MVVM {
 		}
 
 		protected override void Insert (int index, object value) {
-			Control.Items.Insert (index, value);
+			ComboBox.Items.Insert (index, value);
 		}
 
 		protected override void Add (object value) {
-			Control.Items.Add (value);
+			ComboBox.Items.Add (value);
 		}
 
 		protected override void RemoveAt (int index) {
-			Control.Items.RemoveAt (index);
+			ComboBox.Items.RemoveAt (index);
 		}
 
 		protected override void Replace (int index, object value) {
-			Control.Items[index] = value;
+			ComboBox.Items[index] = value;
 		}
 
 		protected override void Move (int oldIndex, int newIndex) {
-			object value = Control.Items[oldIndex];
-			Control.Items.RemoveAt (oldIndex);
-			Control.Items.Insert (newIndex, value);
+			object value = ComboBox.Items[oldIndex];
+			ComboBox.Items.RemoveAt (oldIndex);
+			ComboBox.Items.Insert (newIndex, value);
 		}
 
 		protected override void Reset () {
-			Control.Items.Clear ();
-		}
-
-		private void Control_TextChanged (object sender, EventArgs e) {
-			OnChanged (_Text);
-		}
-
-		private void Control_LostFocus (object sender, EventArgs e) {
-			OnChanged (_Text, MVVMOnChangedType.LostFocus);
-		}
-
-		private void Control_SelectedIndexChanged (object sender, EventArgs e) {
-			OnChanged (_SelectedIndex);
+			ComboBox.Items.Clear ();
 		}
 
 	}

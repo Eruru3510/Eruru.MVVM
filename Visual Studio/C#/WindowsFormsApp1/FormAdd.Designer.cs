@@ -34,11 +34,13 @@ namespace WindowsFormsApp1 {
 			this.TextBoxRemark = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.ComboBoxSchool = new System.Windows.Forms.ComboBox();
+			this.LabelError = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// ButtonConfirm
 			// 
-			this.ButtonConfirm.Location = new System.Drawing.Point(50, 105);
+			this.ButtonConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonConfirm.Location = new System.Drawing.Point(50, 130);
 			this.ButtonConfirm.Name = "ButtonConfirm";
 			this.ButtonConfirm.Size = new System.Drawing.Size(75, 23);
 			this.ButtonConfirm.TabIndex = 2;
@@ -47,7 +49,8 @@ namespace WindowsFormsApp1 {
 			// 
 			// ButtonCancel
 			// 
-			this.ButtonCancel.Location = new System.Drawing.Point(130, 105);
+			this.ButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonCancel.Location = new System.Drawing.Point(130, 130);
 			this.ButtonCancel.Name = "ButtonCancel";
 			this.ButtonCancel.Size = new System.Drawing.Size(75, 23);
 			this.ButtonCancel.TabIndex = 3;
@@ -65,6 +68,8 @@ namespace WindowsFormsApp1 {
 			// 
 			// TextBoxName
 			// 
+			this.TextBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.TextBoxName.Location = new System.Drawing.Point(55, 5);
 			this.TextBoxName.Name = "TextBoxName";
 			this.TextBoxName.Size = new System.Drawing.Size(150, 21);
@@ -72,6 +77,8 @@ namespace WindowsFormsApp1 {
 			// 
 			// TextBoxAge
 			// 
+			this.TextBoxAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.TextBoxAge.Location = new System.Drawing.Point(55, 30);
 			this.TextBoxAge.Name = "TextBoxAge";
 			this.TextBoxAge.Size = new System.Drawing.Size(150, 21);
@@ -97,6 +104,8 @@ namespace WindowsFormsApp1 {
 			// 
 			// TextBoxRemark
 			// 
+			this.TextBoxRemark.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.TextBoxRemark.Location = new System.Drawing.Point(55, 80);
 			this.TextBoxRemark.Name = "TextBoxRemark";
 			this.TextBoxRemark.Size = new System.Drawing.Size(150, 21);
@@ -113,17 +122,30 @@ namespace WindowsFormsApp1 {
 			// 
 			// ComboBoxSchool
 			// 
+			this.ComboBoxSchool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ComboBoxSchool.FormattingEnabled = true;
 			this.ComboBoxSchool.Location = new System.Drawing.Point(55, 55);
 			this.ComboBoxSchool.Name = "ComboBoxSchool";
 			this.ComboBoxSchool.Size = new System.Drawing.Size(150, 20);
 			this.ComboBoxSchool.TabIndex = 12;
 			// 
+			// LabelError
+			// 
+			this.LabelError.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.LabelError.Location = new System.Drawing.Point(5, 105);
+			this.LabelError.Name = "LabelError";
+			this.LabelError.Size = new System.Drawing.Size(200, 20);
+			this.LabelError.TabIndex = 13;
+			this.LabelError.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// FormAdd
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(211, 132);
+			this.ClientSize = new System.Drawing.Size(211, 161);
+			this.Controls.Add(this.LabelError);
 			this.Controls.Add(this.ComboBoxSchool);
 			this.Controls.Add(this.TextBoxRemark);
 			this.Controls.Add(this.label3);
@@ -153,5 +175,6 @@ namespace WindowsFormsApp1 {
 		private System.Windows.Forms.TextBox TextBoxRemark;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox ComboBoxSchool;
+		private System.Windows.Forms.Label LabelError;
 	}
 }

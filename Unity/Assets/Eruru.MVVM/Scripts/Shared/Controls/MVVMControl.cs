@@ -8,6 +8,7 @@ namespace Eruru.MVVM {
 
 	public partial class MVVMControl : INotifyPropertyChanged, IEnumerable<MVVMControl> {
 
+		public event PropertyChangedEventHandler PropertyChanged;
 		public MVVMBinding Name {
 
 			get {
@@ -22,13 +23,19 @@ namespace Eruru.MVVM {
 		public MVVMBinding DataContext {
 
 			get {
-				return GetBinding (ref _DataContext, binding => DataContext = binding);
+				return GetBinding (ref _DataContext, binding => {
+					binding.Path = null;
+					DataContext = binding;
+				});
 			}
 
 			set {
 				SetBinding (ref _DataContext, value, isDataContext: true, setTargetValue: targetValue => {
-					if (OnDataContextChanged != null) {
-						OnDataContextChanged ();
+					foreach (MVVMBinding binding in Bindings) {
+						binding.Bind ();
+					}
+					foreach (MVVMTrigger trigger in Triggers) {
+						trigger.Bind ();
 					}
 					foreach (MVVMControl control in Controls) {
 						control.DataContext.Bind ();
@@ -70,18 +77,29 @@ namespace Eruru.MVVM {
 			}
 
 		}
-		public event PropertyChangedEventHandler PropertyChanged;
+		public MVVMValidation Validation {
+
+			get {
+				return _Validation;
+			}
+
+			set {
+				_Validation = value;
+			}
+
+		}
 
 		internal Dictionary<string, MVVMControl> ControlNames = new Dictionary<string, MVVMControl> ();
 		internal MVVMControl _Parent;
 
 		readonly List<MVVMBinding> Bindings = new List<MVVMBinding> ();
 		readonly List<MVVMControl> _Controls = new List<MVVMControl> ();
+		readonly List<MVVMTrigger> Triggers = new List<MVVMTrigger> ();
 
-		event MVVMAction OnDataContextChanged;
 		MVVMBinding _Name;
 		MVVMBinding _DataContext;
 		MVVMControl _Root;
+		MVVMValidation _Validation = new MVVMValidation ();
 
 		public MVVMControl Add (MVVMControl control) {
 			control._Parent = this;
@@ -97,6 +115,18 @@ namespace Eruru.MVVM {
 		public MVVMControl Add (MVVMControl control, int index) {
 			control._Parent = this;
 			Controls.Insert (index, control);
+			return this;
+		}
+
+		public MVVMControl AddTrigger (MVVMTrigger trigger) {
+			trigger.Control = this;
+			Triggers.Add (trigger);
+			return this;
+		}
+		public MVVMControl AddTrigger (params MVVMTrigger[] triggers) {
+			foreach (MVVMTrigger trigger in triggers) {
+				AddTrigger (trigger);
+			}
 			return this;
 		}
 
@@ -137,6 +167,9 @@ namespace Eruru.MVVM {
 		public void Unbind () {
 			ForEach (control => {
 				control.DataContext.Unbind ();
+				foreach (MVVMTrigger trigger in control.Triggers) {
+					trigger.Unbind ();
+				}
 				foreach (MVVMBinding binding in control.Bindings) {
 					binding.Unbind ();
 				}
@@ -159,7 +192,7 @@ namespace Eruru.MVVM {
 
 		protected MVVMBinding GetBinding (ref MVVMBinding binding, Action<MVVMBinding> setBinding) {
 			if (binding == null) {
-				setBinding (new MVVMBinding ());
+				setBinding (new MVVMBinding (string.Empty));
 			}
 			return binding;
 		}
@@ -173,19 +206,18 @@ namespace Eruru.MVVM {
 			bool isDataContext = false, [CallerMemberName] string propertyName = null
 		) {
 			if (!isDataContext && binding != null) {
-				OnDataContextChanged -= binding.Bind;
 				Bindings.Remove (binding);
 			}
 			binding = value;
 			if (binding == null) {
 				return;
 			}
-			binding._Control = this;
+			binding.Control = this;
 			if (propertyName == null) {
 				propertyName = MVVMAPI.GetCallerMemberName ();
 			}
-			binding._TargetPropertyName = propertyName;
-			binding._IsDataContext = isDataContext;
+			binding.TargetPropertyName = propertyName;
+			binding.IsDataContext = isDataContext;
 			binding.OnGetTargetValue = getTargetValue;
 			binding.OnSetTargetValue = setTargetValue;
 			binding.OnUnbind = unbind;
@@ -193,12 +225,11 @@ namespace Eruru.MVVM {
 			binding.DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
 			if (!isDataContext) {
 				Bindings.Add (binding);
-				OnDataContextChanged += binding.Bind;
 			}
 		}
 
 		internal protected void OnChanged (MVVMBinding binding, MVVMOnChangedType onChangedType = MVVMOnChangedType.PropertyChanged) {
-			if (binding == null || binding.BlockOnChanged) {
+			if (binding == null || binding.BlockOnChanged || binding.IsTrigger) {
 				return;
 			}
 			switch (binding.GetMode ()) {

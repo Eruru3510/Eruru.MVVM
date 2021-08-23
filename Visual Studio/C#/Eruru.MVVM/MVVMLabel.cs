@@ -4,23 +4,10 @@ namespace Eruru.MVVM {
 
 	public class MVVMLabel : MVVMControl {
 
-		public new Label Control { get; }
-		public MVVMBinding Text {
+		public Label Label { get; }
 
-			get {
-				return GetBinding (ref _Text, binding => Text = binding);
-			}
-
-			set {
-				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue));
-			}
-
-		}
-
-		MVVMBinding _Text;
-
-		public MVVMLabel (Label control) : base (control) {
-			Control = control;
+		public MVVMLabel (Label label) : base (label) {
+			Label = label;
 		}
 
 	}

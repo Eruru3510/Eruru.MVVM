@@ -23,7 +23,10 @@ namespace Eruru.MVVM {
 					if (NotifyCollectionChanged != null) {
 						NotifyCollectionChanged.CollectionChanged += MVVMItemsControlBase_CollectionChanged;
 					}
-				}, unbind: Unbind);
+				}, unbind: () => {
+					Reset ();
+					CancelCollectionChanged ();
+				});
 			}
 
 		}
@@ -64,7 +67,7 @@ namespace Eruru.MVVM {
 
 		protected virtual void Insert (int index, object value) {
 			MVVMControl control = (MVVMControl)Convert (value);
-			control._Parent = this;
+			control.Parent = this;
 			control.DataContext = new MVVMBinding (value);
 			control.Build (Root);
 			Items.Insert (index, control);
@@ -115,12 +118,8 @@ namespace Eruru.MVVM {
 			OnReset ();
 		}
 
-		void Unbind () {
-			Reset ();
-			CancelCollectionChanged ();
-		}
-
 		void MVVMItemsControlBase_CollectionChanged (object sender, MVVMNotifyCollectionChangedEventArgs e) {
+			//Console.WriteLine ("CollectionChanged {0} from {1} to {2}", e.Action, sender, ItemsSource);
 			switch (e.Action) {
 				case MVVMNotifyCollectionChangedAction.Add:
 					Insert (e.NewStartingIndex, e.NewItems[0]);

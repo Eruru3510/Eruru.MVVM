@@ -23,7 +23,10 @@ namespace Eruru.MVVM {
 					if (NotifyCollectionChanged != null) {
 						NotifyCollectionChanged.CollectionChanged += MVVMItemsControlBase_CollectionChanged;
 					}
-				}, unbind: Unbind);
+				}, unbind: () => {
+					Reset ();
+					CancelCollectionChanged ();
+				});
 			}
 
 		}
@@ -113,11 +116,6 @@ namespace Eruru.MVVM {
 			}
 			Items.Clear ();
 			OnReset ();
-		}
-
-		void Unbind () {
-			Reset ();
-			CancelCollectionChanged ();
 		}
 
 		void MVVMItemsControlBase_CollectionChanged (object sender, MVVMNotifyCollectionChangedEventArgs e) {

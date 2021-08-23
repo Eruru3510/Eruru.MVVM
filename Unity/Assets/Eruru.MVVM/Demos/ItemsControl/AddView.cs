@@ -49,7 +49,7 @@ namespace Eruru.MVVM.Demo.ItemsControl {
 						Text = new MVVMBinding ("Age")
 					},
 					new MVVMDropdown (DropdownSchool) {
-						ItemsSource = new MVVMBinding (new MVVMBindingRelativeSource (3), "DataContext.Schools"),
+						ItemsSource = new MVVMBinding (new MVVMRelativeSource (3), "DataContext.Schools"),
 						Text = new MVVMBinding ("School")
 					},
 					new MVVMInputField (InputFieldRemark) {

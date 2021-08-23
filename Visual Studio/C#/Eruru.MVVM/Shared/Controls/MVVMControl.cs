@@ -8,6 +8,7 @@ namespace Eruru.MVVM {
 
 	public partial class MVVMControl : INotifyPropertyChanged, IEnumerable<MVVMControl> {
 
+		public event PropertyChangedEventHandler PropertyChanged;
 		public MVVMBinding Name {
 
 			get {
@@ -22,35 +23,29 @@ namespace Eruru.MVVM {
 		public MVVMBinding DataContext {
 
 			get {
-				return GetBinding (ref _DataContext, binding => DataContext = binding);
+				return GetBinding (ref _DataContext, binding => {
+					binding.Path = null;
+					DataContext = binding;
+				});
 			}
 
 			set {
-				SetBinding (ref _DataContext, value, isDataContext: true, setTargetValue: targetValue => {
-					if (OnDataContextChanged != null) {
-						OnDataContextChanged ();
+				SetBinding (ref _DataContext, value, setTargetValue: targetValue => {
+					foreach (MVVMBinding binding in Bindings) {
+						binding.Bind ();
+					}
+					foreach (MVVMTrigger trigger in Triggers) {
+						trigger.Bind ();
 					}
 					foreach (MVVMControl control in Controls) {
 						control.DataContext.Bind ();
 					}
-				});
+				}, isDataContext: true);
 			}
 
 		}
-		public MVVMControl Root {
-
-			get {
-				return _Root;
-			}
-
-		}
-		public MVVMControl Parent {
-
-			get {
-				return _Parent;
-			}
-
-		}
+		public MVVMControl Root { get; private set; }
+		public MVVMControl Parent { get; internal set; }
 		public List<MVVMControl> Controls {
 
 			get {
@@ -65,27 +60,35 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				Controls[index].Unbind ();
-				Controls[index] = value;
+				RemoveAt (index);
+				Insert (index, value);
 			}
 
 		}
-		public event PropertyChangedEventHandler PropertyChanged;
+		public MVVMValidation Validation {
 
-		internal Dictionary<string, MVVMControl> ControlNames = new Dictionary<string, MVVMControl> ();
-		internal MVVMControl _Parent;
+			get {
+				return _Validation;
+			}
+
+			set {
+				_Validation = value;
+			}
+
+		}
+
+		internal Dictionary<string, MVVMControl> NamedControls = new Dictionary<string, MVVMControl> ();
 
 		readonly List<MVVMBinding> Bindings = new List<MVVMBinding> ();
 		readonly List<MVVMControl> _Controls = new List<MVVMControl> ();
+		readonly List<MVVMTrigger> Triggers = new List<MVVMTrigger> ();
 
-		event MVVMAction OnDataContextChanged;
 		MVVMBinding _Name;
 		MVVMBinding _DataContext;
-		MVVMControl _Root;
+		MVVMValidation _Validation = new MVVMValidation ();
 
 		public MVVMControl Add (MVVMControl control) {
-			control._Parent = this;
-			Controls.Add (control);
+			Insert (Controls.Count, control);
 			return this;
 		}
 		public MVVMControl Add (params MVVMControl[] controls) {
@@ -94,9 +97,22 @@ namespace Eruru.MVVM {
 			}
 			return this;
 		}
-		public MVVMControl Add (MVVMControl control, int index) {
-			control._Parent = this;
+
+		public MVVMControl Insert (int index, MVVMControl control) {
+			control.Parent = this;
 			Controls.Insert (index, control);
+			return this;
+		}
+
+		public MVVMControl AddTrigger (MVVMTrigger trigger) {
+			trigger.Control = this;
+			Triggers.Add (trigger);
+			return this;
+		}
+		public MVVMControl AddTrigger (params MVVMTrigger[] triggers) {
+			foreach (MVVMTrigger trigger in triggers) {
+				AddTrigger (trigger);
+			}
 			return this;
 		}
 
@@ -126,9 +142,9 @@ namespace Eruru.MVVM {
 
 		public MVVMControl Build (MVVMControl root = null) {
 			if (root == null) {
-				root = this;
+				root = Parent == null ? this : Parent.Root;
 			}
-			ControlNames.Clear ();
+			NamedControls.Clear ();
 			ForEach (control => control.Register (root));
 			DataContext.Bind ();
 			return this;
@@ -136,7 +152,11 @@ namespace Eruru.MVVM {
 
 		public void Unbind () {
 			ForEach (control => {
+				control.Unregister ();
 				control.DataContext.Unbind ();
+				foreach (MVVMTrigger trigger in control.Triggers) {
+					trigger.Unbind ();
+				}
 				foreach (MVVMBinding binding in control.Bindings) {
 					binding.Unbind ();
 				}
@@ -151,15 +171,21 @@ namespace Eruru.MVVM {
 		}
 
 		void Register (MVVMControl root) {
-			_Root = root;
+			Root = root;
 			if (_Name != null) {
-				Root.ControlNames[_Name.GetTargetValue<string> ()] = this;
+				Root.NamedControls[_Name.GetTargetValue<string> ()] = this;
+			}
+		}
+
+		void Unregister () {
+			if (_Name != null) {
+				Root.NamedControls.Remove (_Name.GetTargetValue<string> ());
 			}
 		}
 
 		protected MVVMBinding GetBinding (ref MVVMBinding binding, Action<MVVMBinding> setBinding) {
 			if (binding == null) {
-				setBinding (new MVVMBinding ());
+				setBinding (new MVVMBinding (string.Empty));
 			}
 			return binding;
 		}
@@ -167,40 +193,37 @@ namespace Eruru.MVVM {
 		protected void SetBinding (
 			ref MVVMBinding binding, MVVMBinding value,
 			MVVMFunc<object> getTargetValue = null, Action<object> setTargetValue = null,
-			MVVMAction unbind = null,
-			MVVMBindingMode defaultMode = MVVMBindingMode.OneWay,
-			MVVMUpdateSourceTrigger defaultUpdateSourceTrigger = MVVMUpdateSourceTrigger.PropertyChanged,
-			bool isDataContext = false, [CallerMemberName] string propertyName = null
+			bool isInteractive = false, bool isText = false,
+			bool isDataContext = false, MVVMAction unbind = null, [CallerMemberName] string propertyName = null
 		) {
 			if (!isDataContext && binding != null) {
-				OnDataContextChanged -= binding.Bind;
 				Bindings.Remove (binding);
 			}
 			binding = value;
 			if (binding == null) {
 				return;
 			}
-			binding._Control = this;
+			binding.Control = this;
 			if (propertyName == null) {
 				propertyName = MVVMAPI.GetCallerMemberName ();
 			}
-			binding._TargetPropertyName = propertyName;
-			binding._IsDataContext = isDataContext;
+			binding.TargetPropertyName = propertyName;
+			binding.IsDataContext = isDataContext;
 			binding.OnGetTargetValue = getTargetValue;
 			binding.OnSetTargetValue = setTargetValue;
 			binding.OnUnbind = unbind;
-			binding.DefaultMode = defaultMode;
-			binding.DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
+			binding.DefaultMode = isInteractive ? MVVMBindingMode.TwoWay : MVVMBindingMode.OneWay;
+			binding.DefaultUpdateSourceTrigger = isText ? MVVMUpdateSourceTrigger.LostFocus : MVVMUpdateSourceTrigger.PropertyChanged;
 			if (!isDataContext) {
 				Bindings.Add (binding);
-				OnDataContextChanged += binding.Bind;
 			}
 		}
 
 		internal protected void OnChanged (MVVMBinding binding, MVVMOnChangedType onChangedType = MVVMOnChangedType.PropertyChanged) {
-			if (binding == null || binding.BlockOnChanged) {
+			if (binding == null || binding.BlockOnChanged || binding.IsTrigger) {
 				return;
 			}
+			Console.WriteLine ("RaisePropertyChanged {0}.{1} {2}", binding.Control.Control.GetType (), binding.TargetPropertyName, onChangedType);
 			switch (binding.GetMode ()) {
 				case MVVMBindingMode.TwoWay:
 				case MVVMBindingMode.OneWayToSource:

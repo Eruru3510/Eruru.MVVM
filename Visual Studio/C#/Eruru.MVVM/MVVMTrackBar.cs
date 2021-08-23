@@ -5,7 +5,7 @@ namespace Eruru.MVVM {
 
 	public class MVVMTrackBar : MVVMControl {
 
-		public new TrackBar Control { get; }
+		public TrackBar TrackBar { get; }
 		public MVVMBinding Value {
 
 			get {
@@ -13,7 +13,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Value, value, () => Control.Value, targetValue => Control.Value = MVVMAPI.To<int> (targetValue), defaultMode: MVVMBindingMode.TwoWay);
+				SetBinding (ref _Value, value, () => TrackBar.Value, targetValue => TrackBar.Value = MVVMAPI.To<int> (targetValue), true);
 			}
 
 		}
@@ -24,7 +24,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Maximum, value, () => Control.Maximum, targetValue => Control.Maximum = MVVMAPI.To<int> (targetValue));
+				SetBinding (ref _Maximum, value, () => TrackBar.Maximum, targetValue => TrackBar.Maximum = MVVMAPI.To<int> (targetValue));
 			}
 
 		}
@@ -35,7 +35,7 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _Minimum, value, () => Control.Minimum, targetValue => Control.Minimum = MVVMAPI.To<int> (targetValue));
+				SetBinding (ref _Minimum, value, () => TrackBar.Minimum, targetValue => TrackBar.Minimum = MVVMAPI.To<int> (targetValue));
 			}
 
 		}
@@ -44,17 +44,12 @@ namespace Eruru.MVVM {
 		MVVMBinding _Maximum;
 		MVVMBinding _Minimum;
 
-		public MVVMTrackBar (TrackBar control) : base (control) {
-			Control = control;
-			Control.ValueChanged += Control_ValueChanged;
-			Control.LostFocus += Control_LostFocus;
+		public MVVMTrackBar (TrackBar trackBar) : base (trackBar) {
+			TrackBar = trackBar;
+			TrackBar.ValueChanged += (sender, e) => OnChanged (_Value);
 		}
 
-		private void Control_ValueChanged (object sender, EventArgs e) {
-			OnChanged (_Value);
-		}
-
-		private void Control_LostFocus (object sender, EventArgs e) {
+		protected override void OnLostFocus (object sender, EventArgs e) {
 			OnChanged (_Value, MVVMOnChangedType.LostFocus);
 		}
 

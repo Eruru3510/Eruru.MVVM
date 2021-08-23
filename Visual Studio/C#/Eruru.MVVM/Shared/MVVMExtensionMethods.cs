@@ -20,10 +20,10 @@ namespace Eruru.MVVM {
 				Type type = notifyPropertyChanged.GetType ();
 				while (type != null) {
 					fieldInfo = type.GetField ("PropertyChanged", BindingFlags.Instance | BindingFlags.NonPublic);
-					type = type.BaseType;
 					if (fieldInfo != null) {
 						break;
 					}
+					type = type.BaseType;
 				}
 				PropertyChangeds.Add (notifyPropertyChanged, fieldInfo);
 			}

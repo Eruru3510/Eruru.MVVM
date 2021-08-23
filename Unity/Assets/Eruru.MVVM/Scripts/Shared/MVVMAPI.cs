@@ -9,27 +9,13 @@ namespace Eruru.MVVM {
 	public delegate TResult MVVMFunc<in T, out TResult> (T arg);
 	public delegate TResult MVVMFunc<in T1, in T2, out TResult> (T1 arg1, T2 arg2);
 
-	static class MVVMAPI {
+	public static class MVVMAPI {
 
-		public static T To<T> (object value, T defaultValue = default (T)) {
+		public static T To<T> (object value) {
 			if (value == null && typeof (T) == typeof (string)) {
 				return (T)(object)string.Empty;
 			}
-			try {
-				return (T)Convert.ChangeType (value, typeof (T));
-			} catch (FormatException) {
-
-			} catch (InvalidCastException) {
-
-			} catch (OverflowException) {
-
-			} catch {
-				throw;
-			}
-			if (typeof (T) == typeof (string)) {
-				return (T)(object)value.ToString ();
-			}
-			return defaultValue;
+			return (T)Convert.ChangeType (value, typeof (T));
 		}
 
 		public static object ChangeType (object value, Type type) {
@@ -75,6 +61,13 @@ namespace Eruru.MVVM {
 				throw new Exception ("请在属性的set内调用");
 			}
 			return name.Substring (4);
+		}
+
+		public static void Log (string text) {
+#if UNITY_EDITOR
+			UnityEngine.Debug.LogError (text, Control.Control);
+#endif
+			Console.WriteLine (text);
 		}
 
 	}

@@ -5,18 +5,7 @@ namespace Eruru.MVVM {
 
 	public class MVVMButton : MVVMControl {
 
-		public new Button Control { get; }
-		public MVVMBinding Text {
-
-			get {
-				return GetBinding (ref _Text, binding => Text = binding);
-			}
-
-			set {
-				SetBinding (ref _Text, value, () => Control.Text, targetValue => Control.Text = MVVMAPI.To<string> (targetValue));
-			}
-
-		}
+		public Button Button { get; }
 		public MVVMBinding Click {
 
 			get {
@@ -40,17 +29,12 @@ namespace Eruru.MVVM {
 
 		}
 
-		MVVMBinding _Text;
 		MVVMBinding _Click;
 		MVVMBinding _ClickParameter;
 
-		public MVVMButton (Button control) : base (control) {
-			Control = control;
-			Control.Click += Control_Click;
-		}
-
-		private void Control_Click (object sender, EventArgs e) {
-			OnCommand (_Click, _ClickParameter);
+		public MVVMButton (Button button) : base (button) {
+			Button = button;
+			Button.Click += (sender, e) => OnCommand (_Click, _ClickParameter);
 		}
 
 	}

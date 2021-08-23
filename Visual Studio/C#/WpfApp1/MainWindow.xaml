@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Grid>
-		<ComboBox ItemsSource="{Binding Items}" Text="{Binding Text, UpdateSourceTrigger=LostFocus}" IsEditable="True" HorizontalAlignment="Left" Margin="169,165,0,0" VerticalAlignment="Top" Width="120"/>
-		<Button Content="Button" HorizontalAlignment="Left" Margin="357,202,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-		<Label Name="Slider" Content="{Binding Text, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="255,281,0,0" VerticalAlignment="Top" Width="413" Height="45"/>
+		<ComboBox Name="ComboBox" ItemsSource="{Binding Items}" HorizontalAlignment="Left" Margin="251,177,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+		<Label Content="{Binding Text, ElementName=ComboBox}" HorizontalAlignment="Left" Margin="251,215,0,0" VerticalAlignment="Top"/>
+
 	</Grid>
 </Window>

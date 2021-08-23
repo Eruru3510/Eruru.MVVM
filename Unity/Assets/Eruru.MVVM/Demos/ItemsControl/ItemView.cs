@@ -36,11 +36,11 @@ namespace Eruru.MVVM.Demo.ItemsControl {
 					Text = new MVVMBinding ("Remark")
 				},
 				new MVVMButton (ButtonEdit) {
-					OnClick = new MVVMBinding (new MVVMBindingRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnEdit"),
+					OnClick = new MVVMBinding (new MVVMRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnEdit"),
 					OnClickParameter = new MVVMBinding ()
 				},
 				new MVVMButton (ButtonDelete) {
-					OnClick = new MVVMBinding (new MVVMBindingRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnDelete"),
+					OnClick = new MVVMBinding (new MVVMRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnDelete"),
 					OnClickParameter = new MVVMBinding ()
 				}
 			).Build ();

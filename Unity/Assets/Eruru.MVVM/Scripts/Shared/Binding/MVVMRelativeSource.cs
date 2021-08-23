@@ -2,7 +2,7 @@
 
 namespace Eruru.MVVM {
 
-	public class MVVMBindingRelativeSource {
+	public class MVVMRelativeSource {
 
 		public MVVMRelativeSourceMode Mode {
 
@@ -30,16 +30,16 @@ namespace Eruru.MVVM {
 		readonly int _AncestorLevel;
 		readonly Type _AncestorType;
 
-		public MVVMBindingRelativeSource () {
+		public MVVMRelativeSource () {
 			_Mode = MVVMRelativeSourceMode.Self;
 		}
-		public MVVMBindingRelativeSource (Type ancestorType) : this (ancestorType, 1) {
+		public MVVMRelativeSource (Type ancestorType) : this (ancestorType, 1) {
 
 		}
-		public MVVMBindingRelativeSource (int ancestorLevel) : this (null, ancestorLevel) {
+		public MVVMRelativeSource (int ancestorLevel) : this (null, ancestorLevel) {
 
 		}
-		public MVVMBindingRelativeSource (Type ancestorType, int ancestorLevel) {
+		public MVVMRelativeSource (Type ancestorType, int ancestorLevel) {
 			_AncestorType = ancestorType;
 			_AncestorLevel = ancestorLevel;
 			_Mode = MVVMRelativeSourceMode.FindAncestor;

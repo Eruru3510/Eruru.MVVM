@@ -25,11 +25,11 @@ namespace WindowsFormsApp1 {
 					Text = new MVVMBinding ("Remark")
 				},
 				new MVVMButton (ButtonEdit) {
-					Click = new MVVMBinding (new MVVMBindingRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnEdit"),
+					Click = new MVVMBinding (new MVVMRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnEdit"),
 					ClickParameter = new MVVMBinding ()
 				},
 				new MVVMButton (ButtonDelete) {
-					Click = new MVVMBinding (new MVVMBindingRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnDelete"),
+					Click = new MVVMBinding (new MVVMRelativeSource (typeof (MVVMItemsControl)), "DataContext.OnDelete"),
 					ClickParameter = new MVVMBinding ()
 				}
 			);
