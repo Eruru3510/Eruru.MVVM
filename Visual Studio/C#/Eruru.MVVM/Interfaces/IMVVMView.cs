@@ -2,7 +2,7 @@
 
 	public interface IMVVMView {
 
-		MVVMControl Build ();
+		MVVMControlBase Build ();
 
 	}
 

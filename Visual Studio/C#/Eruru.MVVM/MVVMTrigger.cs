@@ -6,7 +6,7 @@ namespace Eruru.MVVM {
 	public class MVVMTrigger {
 
 		public MVVMTriggerType Type { get; private set; }
-		public MVVMControl Control {
+		public MVVMControlBase Control {
 
 			get {
 				return Property.Control;

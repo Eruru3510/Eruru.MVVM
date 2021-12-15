@@ -158,8 +158,8 @@ namespace Eruru.MVVM {
 			_UpdateSourceTrigger = updateSourceTrigger;
 		}
 		public MVVMBinding (
-			MVVMBindingMode mode = MVVMBindingMode.Default,
-			MVVMUpdateSourceTrigger updateSourceTrigger = MVVMUpdateSourceTrigger.Default,
+			MVVMBindingMode mode,
+			MVVMUpdateSourceTrigger updateSourceTrigger,
 			string path = null,
 			object value = null,
 			MVVMRelativeSource relativeSource = null,

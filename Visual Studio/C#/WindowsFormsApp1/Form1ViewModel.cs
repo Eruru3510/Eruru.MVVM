@@ -13,27 +13,26 @@ namespace WindowsFormsApp1 {
 			new Item ("韩梅梅", 22, "光明小学", "在一起")
 		};
 		public MVVMRelayCommand OnAdd { get; set; }
-		public MVVMRelayCommand OnEdit { get; set; }
-		public MVVMRelayCommand OnDelete { get; set; }
+		public MVVMRelayCommand<Item> OnEdit { get; set; }
+		public MVVMRelayCommand<Item> OnDelete { get; set; }
 
 		public Form1ViewModel () {
 			OnAdd = new MVVMRelayCommand (value => {
 				FormAdd formAdd = new FormAdd ();
-				MVVMControl control = formAdd.Build ();
+				MVVMControlBase control = formAdd.Build ();
 				if (formAdd.ShowDialog () == DialogResult.OK) {
 					Items.Add (control.DataContext.GetTargetValue<FormAddViewModel> ().Item);
 				}
 			});
-			OnEdit = new MVVMRelayCommand (value => {
-				Item item = (Item)value;
-				FormAdd formAdd = new FormAdd (item.Clone ());
-				MVVMControl control = formAdd.Build ();
+			OnEdit = new MVVMRelayCommand<Item> (value => {
+				FormAdd formAdd = new FormAdd (value.DeepClone ());
+				MVVMControlBase control = formAdd.Build ();
 				if (formAdd.ShowDialog () == DialogResult.OK) {
-					Items[Items.IndexOf (item)] = control.DataContext.GetTargetValue<FormAddViewModel> ().Item;
+					Items[Items.IndexOf (value)] = control.DataContext.GetTargetValue<FormAddViewModel> ().Item;
 				}
 			});
-			OnDelete = new MVVMRelayCommand (value => {
-				Items.Remove ((Item)value);
+			OnDelete = new MVVMRelayCommand<Item> (value => {
+				Items.Remove (value);
 			});
 		}
 

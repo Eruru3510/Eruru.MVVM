@@ -34,13 +34,13 @@ namespace Eruru.MVVM {
 		MVVMValidationErrorCollection _Errors = new MVVMValidationErrorCollection ();
 		bool _HasError;
 
-		public void AddError (MVVMValidationError validationError) {
+		public void Add (MVVMValidationError validationError) {
 			Errors.Add (validationError);
 			Errors.CurrentItem = validationError;
 			HasError = true;
 		}
 
-		public void ClearError () {
+		public void Clear () {
 			HasError = false;
 			Errors.CurrentItem = null;
 			Errors.Clear ();

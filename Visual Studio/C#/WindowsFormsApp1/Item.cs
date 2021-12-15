@@ -36,7 +36,7 @@ namespace WindowsFormsApp1 {
 			Remark = remark;
 		}
 
-		public Item Clone () {
+		public Item DeepClone () {
 			return new Item (Name, Age, School, Remark);
 		}
 

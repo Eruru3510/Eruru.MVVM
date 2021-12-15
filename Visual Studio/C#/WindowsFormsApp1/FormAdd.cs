@@ -1,10 +1,11 @@
 ﻿using Eruru.MVVM;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1 {
 
-	public partial class FormAdd : Form {
+	public partial class FormAdd : Form, IMVVMView {
 
 		readonly Item Item;
 
@@ -21,9 +22,9 @@ namespace WindowsFormsApp1 {
 			};
 		}
 
-		public MVVMControl Build () {
+		public MVVMControlBase Build () {
 			return new MVVMControl (this) {
-				DataContext = new MVVMBinding (new FormAddViewModel () { Item = Item })
+				DataContext = new MVVMBinding (new FormAddViewModel (Item))
 			}.Add (
 				new MVVMControl (this) {
 					DataContext = new MVVMBinding ("Item")
@@ -32,7 +33,7 @@ namespace WindowsFormsApp1 {
 						Text = new MVVMBinding ("Name")
 					},
 					new MVVMTextBox (TextBoxAge) {
-						Text = new MVVMBinding (path: "Age", validatesOnExceptions: true)
+						Text = new MVVMBinding (path: "Age", validatesOnExceptions: true, updateSourceTrigger: MVVMUpdateSourceTrigger.PropertyChanged)
 					}.AddTrigger (
 						new MVVMTrigger ("Validation.HasError", true).Add (
 							new MVVMSetter ("ForeColor", Color.Red),
@@ -41,7 +42,7 @@ namespace WindowsFormsApp1 {
 					),
 					new MVVMComboBox (ComboBoxSchool) {
 						ItemsSource = new MVVMBinding (new MVVMRelativeSource (3), "DataContext.Schools"),
-						Text = new MVVMBinding ("School")
+						SelectedItem = new MVVMBinding ("School")
 					},
 					new MVVMTextBox (TextBoxRemark) {
 						Text = new MVVMBinding ("Remark")
@@ -50,7 +51,7 @@ namespace WindowsFormsApp1 {
 				new MVVMLabel (LabelError) {
 					Name = "LabelError"
 				}
-		   ).Build ();
+			).Build ();
 		}
 
 	}

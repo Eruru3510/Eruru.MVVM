@@ -24,17 +24,33 @@ namespace Eruru.MVVM {
 			}
 
 			set {
-				SetBinding (ref _SelectedItem, value, () => ComboBox.SelectedItem, targetValue => ComboBox.SelectedItem = targetValue);
+				SetBinding (ref _SelectedItem, value, () => ComboBox.SelectedItem, targetValue => ComboBox.SelectedItem = targetValue, true);
+			}
+
+		}
+		public MVVMBinding SelectedValue {
+
+			get {
+				return GetBinding (ref _SelectedValue, binding => SelectedValue = binding);
+			}
+
+			set {
+				SetBinding (ref _SelectedValue, value, () => ComboBox.SelectedValue, targetValue => ComboBox.SelectedValue = targetValue, true);
 			}
 
 		}
 
 		MVVMBinding _SelectedIndex;
 		MVVMBinding _SelectedItem;
+		MVVMBinding _SelectedValue;
 
 		public MVVMComboBox (ComboBox comboBox) : base (comboBox) {
 			ComboBox = comboBox;
-			ComboBox.SelectedIndexChanged += (sender, e) => OnChanged (_SelectedIndex);
+			ComboBox.SelectedIndexChanged += (sender, e) => {
+				OnChanged (_SelectedIndex);
+				OnChanged (_SelectedItem);
+				OnChanged (_SelectedValue);
+			};
 		}
 
 		protected override void OnSetText (MVVMBinding text) {
@@ -42,33 +58,33 @@ namespace Eruru.MVVM {
 			text.DefaultUpdateSourceTrigger = MVVMUpdateSourceTrigger.PropertyChanged;
 		}
 
-		protected override object Convert (object value) {
+		protected override object ItemsControlConvert (object value) {
 			return value;
 		}
 
-		protected override void Insert (int index, object value) {
+		protected override void ItemsControlInsert (int index, object value) {
 			ComboBox.Items.Insert (index, value);
 		}
 
-		protected override void Add (object value) {
+		protected override void ItemsControlAdd (object value) {
 			ComboBox.Items.Add (value);
 		}
 
-		protected override void RemoveAt (int index) {
+		protected override void ItemsControlRemoveAt (int index) {
 			ComboBox.Items.RemoveAt (index);
 		}
 
-		protected override void Replace (int index, object value) {
+		protected override void ItemsControlReplace (int index, object value) {
 			ComboBox.Items[index] = value;
 		}
 
-		protected override void Move (int oldIndex, int newIndex) {
+		protected override void ItemsControlMove (int oldIndex, int newIndex) {
 			object value = ComboBox.Items[oldIndex];
 			ComboBox.Items.RemoveAt (oldIndex);
 			ComboBox.Items.Insert (newIndex, value);
 		}
 
-		protected override void Reset () {
+		protected override void ItemsControlReset () {
 			ComboBox.Items.Clear ();
 		}
 

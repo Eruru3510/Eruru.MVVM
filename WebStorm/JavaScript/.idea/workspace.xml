@@ -33,9 +33,9 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/compile.cmd" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -103,6 +103,11 @@
       <workItem from="1628261745883" duration="442000" />
       <workItem from="1628908664204" duration="67000" />
       <workItem from="1629685154230" duration="2289000" />
+      <workItem from="1629764680894" duration="50000" />
+      <workItem from="1629764823989" duration="136000" />
+      <workItem from="1629765021705" duration="99000" />
+      <workItem from="1638851326509" duration="155000" />
+      <workItem from="1639138198282" duration="501000" />
     </task>
     <servers />
   </component>

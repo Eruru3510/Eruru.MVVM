@@ -92,6 +92,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Eruru.MVVM.WinForms\Eruru.MVVM.WinForms.csproj">
+      <Project>{e6444a1d-a570-4142-8b94-aaddcca7021c}</Project>
+      <Name>Eruru.MVVM.WinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Eruru.MVVM\Eruru.MVVM.csproj">
       <Project>{99a8ddda-8994-4c41-8d57-de7a775c302d}</Project>
       <Name>Eruru.MVVM</Name>

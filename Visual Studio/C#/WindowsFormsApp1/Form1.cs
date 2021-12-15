@@ -18,6 +18,7 @@ namespace WindowsFormsApp1 {
 					Click = new MVVMBinding ("OnAdd")
 				}
 			).Build ();
+
 		}
 
 	}

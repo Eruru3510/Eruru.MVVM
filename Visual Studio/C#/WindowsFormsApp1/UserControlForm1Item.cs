@@ -10,7 +10,7 @@ namespace WindowsFormsApp1 {
 			Anchor = AnchorStyles.Left | AnchorStyles.Right;
 		}
 
-		public MVVMControl Build () {
+		public MVVMControlBase Build () {
 			return new MVVMControl (this).Add (
 				new MVVMLabel (LabelName) {
 					Text = new MVVMBinding ("Name")

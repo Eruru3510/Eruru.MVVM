@@ -65,7 +65,7 @@ namespace Eruru.MVVM {
 
 		public static void Log (string text) {
 #if UNITY_EDITOR
-			UnityEngine.Debug.LogError (text, Control.Control);
+			//UnityEngine.Debug.LogError (text, Control.Control);
 #endif
 			Console.WriteLine (text);
 		}
